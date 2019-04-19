@@ -1,19 +1,19 @@
 <template>
 <nav>
-     <v-toolbar id="nav" flat app>
-    <v-toolbar-side-icon @click="drawer = !drawer" class="white--text"></v-toolbar-side-icon>
-    <v-toolbar-title class="white--text  pl-5"  > {{ title }} </v-toolbar-title>
+     <v-toolbar color="transparent" id="nav" flat app>
+    <v-toolbar-side-icon @click="drawer = !drawer" class="dark--text"></v-toolbar-side-icon>
+    <v-toolbar-title class="dark--text  pl-5"  > {{ title }} </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-toolbar-items class="hidden-sm-and-down">
-      <v-btn  to="/" class="white--text" flat>
+      <v-btn @click.native="changePage(0)" to="/" class="white--text" flat>
            <v-icon class="mr-2">home</v-icon>
            <span>Home</span>
       </v-btn>
-      <v-btn  to="/Passwords" class="white--text" flat>
+      <v-btn @click.native="changePage(1)"  to="/Passwords" class="white--text" flat>
           <v-icon class="mr-2">lock</v-icon>
            <span>Vault</span>
       </v-btn>
-      <v-btn to="/Notes" class="white--text" flat>
+      <v-btn @click.native="changePage(2)" to="/Notes" class="white--text" flat>
           <v-icon class="mr-2">notes</v-icon>
            <span>Notes</span>
       </v-btn>
@@ -78,8 +78,27 @@ export default {
         }
     },
    methods: {
+    changePage(num) {
       
+      let background = document.querySelector('#background');
+      if(this.pages[num].link === '/Passwords') {
+        background.style.transform = 'skewX(0deg)'
+        background.style.width = '100%'
+        background.style.height = '93vh'
+        background.style.marginTop = '8vh'
+       
+      }
+      if(this.pages[num].link === '/') {
+        background.style.transform = 'skewX(30deg)'
+        background.style.width = '50%'
+        background.style.height = '100vh'
+        background.style.marginTop = '0'
+       
+      }
     
+    }
+    
+   
    }
 }
 </script>

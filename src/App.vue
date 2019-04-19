@@ -20,9 +20,10 @@ export default {
   },
   data () {
     return {
-      //
+      
     }
-  }
+  },
+ 
 }
 </script>
 
@@ -33,7 +34,7 @@ export default {
     position: absolute;
     background-color:#fff;
     transform: skewX(30deg);
-    transition: .5s ease-in-out;
+    transition: .3s ease-in-out;
   }
   html {
     overflow-y: hidden;
@@ -41,7 +42,7 @@ export default {
 
   .page-animate-enter-active {
     animation: coming .2s;
-    animation-delay: 2s;
+    animation-delay: .3s;
     opacity: 0;
   }
 
@@ -72,7 +73,7 @@ export default {
  }
 
  to {
-   transform: translateX(-50px);
+   transform: translateX(50px);
    opacity: 0;
  }
 }
