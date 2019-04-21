@@ -4,10 +4,10 @@
       <v-layout row wrap>
         <v-flex>
           <div class="box sign-in">
-             <v-responsive>
+             
                <v-icon color="secondary" class="lock" >lock</v-icon>
              
-              <v-container fill-height>
+              <v-container>
                 <v-layout align-center>
                   <v-flex>
                     <form>
@@ -35,7 +35,7 @@
                   </v-flex>
                 </v-layout>
               </v-container>
-            </v-responsive>
+            
           </div>
         </v-flex>
         <v-flex>
@@ -44,16 +44,15 @@
               <v-container fill-height>
                 <v-layout align-center>
                   <v-flex>
-                    <h3 class="display-3 white--text">Welcome to the vault</h3>
+                    <h3 class="display-3 white--text">Welcome To The Vault</h3>
 
-                    <span class="subheading" >
-                    Lorem ipsum dolor sit amet, pri veniam forensibus id. Vis maluisset molestiae id, 
-                    ad semper lobortis cum. At impetus detraxit incorrupte usu, repudiare
-                     assueverit ex eum, ne nam essent vocent admodum.</span>
+                    <span class="subheading" >Create and store strong passwords and never have to worry about 
+                    forgetting them, you will get a strength check on your password or you can use the password generator and automatically get a strong password.
+                    </span>
 
                     <v-divider class="my-3"></v-divider>
 
-                    <div class="title mb-3">Check out our newest features!</div>
+                    <div class="title mb-3">Create password now!</div>
 
                     <v-btn flat round class="my-3 primary" large>create</v-btn>
                   </v-flex>
@@ -69,14 +68,50 @@
 
 <script>
 export default {
-  components: {}
+
+  created() {
+      this.$emit('changePage', 1)
+    
+  },
+  components: {},
+  data() {
+    return {
+      email: '',
+      password: '',
+     
+    }
+    
+  },
+
+  methods: {
+      
+ },
+  
+ 
+
+
+ computed: {
+   emailErrors() {
+     let regex = new RegExp(/@/)
+
+     if(this.email.length > 0 && regex.test(this.email) === false) {
+       return 'Email not valid'
+     }
+   },
+   passwordErrors() {
+     if(this.password.length > 0 && this.password.length < 6) {
+       return 'To short'
+     }
+   },
+ 
+ }
 };
 </script>
 
 <style scoped>
 .sign-in {
   width: 500px;
-  height: 60vh;
+  height: 70vh;
   margin: 100px auto;
 }
 .welcome {
