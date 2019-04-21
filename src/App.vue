@@ -45,7 +45,7 @@ export default {
         this.color = "#fff";
         this.skew = "skewX(30deg)";
         this.width = "50%";
-        this.margin = '0';
+        this.margin = "0";
         this.dark = true;
         this.nav = false;
       }
@@ -53,7 +53,7 @@ export default {
         this.color = "#eee";
         this.skew = "skewX(0)";
         this.width = "100%";
-        this.margin = '0'
+        this.margin = "0";
         this.dark = false;
         this.nav = false;
       }
@@ -61,7 +61,7 @@ export default {
         this.color = "#eee";
         this.skew = "skewX(0)";
         this.width = "75%";
-        this.margin = '25%';
+        this.margin = "25%";
         this.dark = false;
         this.nav = true;
       }
@@ -97,6 +97,7 @@ html {
   text-align: center;
   position: fixed;
   width: 100%;
+ 
 }
 
 @keyframes coming {
