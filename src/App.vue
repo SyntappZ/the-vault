@@ -10,6 +10,7 @@
       id="background"
     ></div>
     <Navbar :dark="dark" :nav="nav"/>
+   
     <v-content class="secondary">
       <transition name="page-animate">
         <router-view v-on:changePage="updatePage($event)"></router-view>
@@ -25,7 +26,8 @@ export default {
   name: "App",
 
   components: {
-    Navbar
+    Navbar,
+    
   },
   data() {
     return {

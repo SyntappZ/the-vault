@@ -1,10 +1,12 @@
 <template>
+
   <div class="passwordPage page">
+    <passwordCreator :passwordDialog="passwordDialog" v-on:dialogToggle="closeDialog()"/>
     <h1 class="subheading grey--text">VAULT</h1>
 
     <v-container class="my-5">
       <v-layout>
-        <v-btn class="font-weight-light" color="grey" flat round>
+        <v-btn @click="passwordDialog = true" class="font-weight-light" color="grey" flat round>
           <span>add password</span>
           <v-icon small>add</v-icon>
         </v-btn>
@@ -40,11 +42,11 @@
       <v-layout>
         <v-dialog  v-model="dialog" max-width="290">
           <v-card>
-            <v-card-title> {{ this.name }} </v-card-title>
+            <v-card-title  class="headline" > {{ this.name }} </v-card-title>
             
             <v-divider></v-divider>
   
-            <v-chip  color="secondary white--text" >{{ this.pass }}</v-chip>
+            <v-card-text  class="pass-text text-xs-center" color="grey--text" >{{ this.pass }}</v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -65,7 +67,11 @@
 </template>
 
 <script>
+ import PasswordCreator from "@/components/passwordCreate.vue";
 export default {
+ components: {
+   PasswordCreator
+ },
   beforeCreate() {
     this.$emit("changePage", 2);
   },
@@ -102,7 +108,8 @@ export default {
       color: "",
       dialog: false,
       name: '',
-      pass: ''
+      pass: '',
+      passwordDialog: false,
     };
   },
   methods: {
@@ -110,6 +117,9 @@ export default {
       this.dialog = true
       this.name = name
       this.pass = password;
+    },
+    closeDialog() {
+      this.passwordDialog = false
     }
   },
   computed: {}
@@ -120,6 +130,10 @@ export default {
 <style scoped>
 .password-wrap {
    overflow-y: auto;
+}
+.pass-text {
+  letter-spacing: 3px;
+  font-weight: 700;
 }
 
 .strong {
