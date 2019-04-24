@@ -14,9 +14,13 @@
                 </v-flex>
                 <v-spacer></v-spacer>
                 <div>
-                  <v-avatar :class="strengthColor">
-                    <v-icon dark>lock</v-icon>
-                  </v-avatar>
+                  <v-progress-circular
+                    :rotate="360"
+                    :size="100"
+                    :width="15"
+                    :value="scorePassword"
+                    :color="color"
+                  >{{ strength }}</v-progress-circular>
                 </div>
 
                 <v-flex xs12>
@@ -24,7 +28,6 @@
                     label="Password"
                     :type="show ? 'text' : 'password'"
                     v-model="password"
-                    v-on:input="strengthChecker"
                     @click:append="show = !show"
                     :append-icon="show ? 'visibility' : 'visibility_off'"
                     required
@@ -39,7 +42,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" flat @click="dialogToggle">Close</v-btn>
-            <v-btn color="primary" flat>Add</v-btn>
+            <v-btn color="primary" flat @click="addPassword" :disabled="isDisabled">Add</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -56,8 +59,8 @@ export default {
       website: "",
       password: "",
       show: false,
-      strength: 0,
-      color: 0
+      value: 0,
+      passwordDetails: []
     };
   },
   methods: {
@@ -69,7 +72,7 @@ export default {
       let password = "",
         character;
 
-      for (let i = 0; i < 16; i++) {
+      for (let i = 0; i < 20; i++) {
         password.indexOf(
           (character = String.fromCharCode(
             Math.floor(Math.random() * 94) + 33
@@ -80,52 +83,63 @@ export default {
       }
       this.password = password;
     },
-
-    strengthChecker() {
-      if (this.password.match(/[a-zA-Z0-9][a-zA-Z0-9]+/)) {
-        this.strength += 1;
-      }
-      if (this.password.match(/[~<>?]+/)) {
-        this.strength += 1;
-      }
-      if (this.password.match(/[!@£$%^&*(){}]+/)) {
-        this.strength += 1;
-      }
-      if (this.password.length > 8) {
-        this.strength += 1;
-      }
-      switch (this.strength) {
-        case 0:
-          this.color = 20;
-          break;
-        case 1:
-          this.color = 40;
-          break;
-        case 2:
-          this.color = 60;
-          break;
-        case 3:
-          this.color = 80;
-          break;
-        case 4:
-          this.color = 100;
-          break;
-      }
-      console.log(this.color)
+    addPassword() {
+      this.passwordDetails.push({website: this.website, password: this.password, strength: this.strength.toLowerCase()})
+      this.website = '';
+      this.password = '';
+      
+       this.$emit("addPassword", this.passwordDetails);
+      
     }
   },
 
   computed: {
-    strengthColor() {
-      if(this.color < 60) {
-        return 'red'
+    scorePassword() {
+      let score = 0;
+      if (this.password === "") return score;
+
+      let letters = {};
+
+      for (let i = 0; i < this.password.length; i++) {
+        letters[this.password[i]] = (letters[this.password[i]] || 0) + 1;
+        score += 5.0 / letters[this.password[i]];
       }
-      if(this.color > 60 && this.color < 100) {
-        return 'orange'
+      let variations = {
+        digits: /\d/.test(this.password),
+        lower: /[a-z]/.test(this.password),
+        upper: /[A-Z]/.test(this.password),
+        special: /\W/.test(this.password)
+      };
+
+      let variationsCount = 0;
+      for (let check in variations) {
+        variationsCount += variations[check] === true ? 1 : 0;
       }
-      if(this.color >= 100) {
-        return 'green'
+      score += (variationsCount - 1) * 10;
+
+      return parseInt(score);
+    },
+
+    strength() {
+      if (this.scorePassword < 50) {
+        return "Weak";
+      } else if (this.scorePassword >= 50 && this.scorePassword < 100) {
+        return "Medium";
+      } else {
+        return "Strong";
       }
+    },
+    color() {
+      if (this.strength === "Weak") {
+        return "red";
+      } else if (this.strength === "Medium") {
+        return "orange";
+      } else {
+        return "green";
+      }
+    },
+    isDisabled() {
+      return this.password.length > 3 && this.website.length > 2 ? false : true;
     }
   }
 };

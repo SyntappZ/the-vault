@@ -13,7 +13,7 @@
       </v-layout>
       <v-divider class="my-3"></v-divider>
       <v-layout scrollable row wrap>
-        <v-flex xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.name">
+        <v-flex xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.website">
           <v-card flat class="text-xs-center ma-3">
             <v-responsive class="pt-4">
               <v-avatar :class="`${ password.strength }`" size="100">
@@ -21,7 +21,7 @@
               </v-avatar>
             </v-responsive>
             <v-card-text>
-              <div class="subheading">{{ password.name }}</div>
+              <div class="subheading">{{ password.website }}</div>
               <v-divider class="my-3"></v-divider>
               <v-chip :class="`${ password.strength }`" text-color="white">{{ password.strength }}</v-chip>
             </v-card-text>
@@ -31,7 +31,7 @@
                 <span>Edit</span>
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn @click="getPassword(password.name, password.pass)" flat color="grey">
+              <v-btn @click="getPassword(password.website, password.password)" flat color="grey">
                 <v-icon small left>lock_open</v-icon>
                 <span>Show</span>
               </v-btn>
@@ -79,30 +79,16 @@ export default {
     return {
       passwords: [
         {
-          name: "Google",
-          pass: "jeff",
+          website: "Google",
+          password: "jeff",
           strength: "strong"
         },
         {
-          name: "Facebook",
-          pass: "badman",
+          website: "Facebook",
+          password: "badman",
           strength: "weak"
         },
-        {
-          name: "Twitter",
-          pass: "badman",
-          strength: "medium"
-        },
-        {
-          name: "FFC",
-          pass: "terrymcdoodle",
-          strength: "medium"
-        },
-        {
-          name: "Github",
-          pass: "unclebob",
-          strength: "strong"
-        }
+       
       ],
       page: 2,
       color: "",
@@ -120,7 +106,10 @@ export default {
     },
     closeDialog() {
       this.passwordDialog = false
-    }
+    },
+       addPassword(newPassword) {
+        console.log(newPassword)
+       }
   },
   computed: {}
 };
