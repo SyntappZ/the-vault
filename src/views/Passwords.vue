@@ -1,5 +1,4 @@
 <template>
-
   <div class="passwordPage page">
     <passwordCreator :passwordDialog="passwordDialog" v-on:dialogToggle="closeDialog()"/>
     <h1 class="subheading grey--text">VAULT</h1>
@@ -40,18 +39,22 @@
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-dialog  v-model="dialog" max-width="290">
+        <v-dialog v-model="dialog" max-width="290">
           <v-card>
-            <v-card-title  class="headline" > {{ this.name }} </v-card-title>
-            
+            <v-card-title class="headline">{{ this.name }}</v-card-title>
+
             <v-divider></v-divider>
-  
-            <v-card-text  class="pass-text text-xs-center" color="grey--text" >{{ this.pass }}</v-card-text>
+
+            <v-card-text
+              ref="input"
+              class="pass-text text-xs-center"
+              color="grey--text"
+            >{{ this.pass }}</v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn color="primary" flat="flat" >
+              <v-btn @click="copyPassword" color="primary" flat="flat">
                 <span>Copy</span>
               </v-btn>
 
@@ -67,49 +70,52 @@
 </template>
 
 <script>
- import PasswordCreator from "@/components/passwordCreate.vue";
+import PasswordCreator from "@/components/passwordCreate.vue";
+import { passwordBus } from "../main";
 export default {
- components: {
-   PasswordCreator
- },
+  components: {
+    PasswordCreator
+  },
   beforeCreate() {
     this.$emit("changePage", 2);
   },
+  created() {
+    passwordBus.$on("addedPassword", data => {
+      this.passwords = data;
+    });
+  },
+
   data() {
     return {
-      passwords: [
-        {
-          website: "Google",
-          password: "jeff",
-          strength: "strong"
-        },
-        {
-          website: "Facebook",
-          password: "badman",
-          strength: "weak"
-        },
-       
-      ],
+      passwords: [],
       page: 2,
       color: "",
       dialog: false,
-      name: '',
-      pass: '',
-      passwordDialog: false,
+      name: "",
+      pass: "",
+      passwordDialog: false
     };
   },
   methods: {
     getPassword(name, password) {
-      this.dialog = true
-      this.name = name
+      this.dialog = true;
+      this.name = name;
       this.pass = password;
     },
     closeDialog() {
-      this.passwordDialog = false
+      this.passwordDialog = false;
     },
-       addPassword(newPassword) {
-        console.log(newPassword)
-       }
+    copyPassword() {
+      let vm = this
+     let copyText = vm.$refs.input
+    
+
+     copyText.select();
+
+     document.execCommand("copy")
+
+     alert(copyText.value)
+    }
   },
   computed: {}
 };
@@ -117,9 +123,6 @@ export default {
 
 
 <style scoped>
-.password-wrap {
-   overflow-y: auto;
-}
 .pass-text {
   letter-spacing: 3px;
   font-weight: 700;

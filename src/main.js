@@ -3,7 +3,10 @@ import './plugins/vuetify'
 import App from './App.vue'
 import router from './router'
 
+
 Vue.config.productionTip = false
+
+export const passwordBus = new Vue({});
 
 new Vue({
   router,

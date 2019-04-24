@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { passwordBus }from '../main'
 export default {
   props: ["passwordDialog"],
   components: {},
@@ -88,7 +89,7 @@ export default {
       this.website = '';
       this.password = '';
       
-       this.$emit("addPassword", this.passwordDetails);
+      passwordBus.$emit('addedPassword', this.passwordDetails)
       
     }
   },
