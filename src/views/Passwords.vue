@@ -1,6 +1,6 @@
 <template>
   <div class="passwordPage page">
-    <passwordCreator :passwordDialog="passwordDialog" v-on:dialogToggle="closeDialog()"/>
+    <passwordCreator ref="edit" :changePassword="editOpen" :passwordDialog="passwordDialog" v-on:dialogToggle="closeDialog()"/>
     <h1 class="subheading grey--text">VAULT</h1>
 
     <v-container class="my-5">
@@ -25,7 +25,7 @@
               <v-chip :class="`${ password.strength }`" text-color="white">{{ password.strength }}</v-chip>
             </v-card-text>
             <v-card-actions>
-              <v-btn flat color="grey">
+              <v-btn @click="edit(password.id)" flat color="grey">
                 <v-icon small left>create</v-icon>
                 <span>Edit</span>
               </v-btn>
@@ -41,11 +41,13 @@
       <v-layout>
         <v-dialog v-model="dialog" max-width="290">
           <v-card>
-            <v-card-title class="headline">{{ this.name }}</v-card-title>
+            <v-card-title class="headline primary white--text">{{ this.name }}</v-card-title>
+            <p class="show title primary--text text-xs-center mt-3">{{ text }}</p>
 
             <v-divider></v-divider>
 
             <v-card-text
+              id="copy-pass"
               ref="input"
               class="pass-text text-xs-center"
               color="grey--text"
@@ -54,7 +56,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn @click="copyPassword" color="primary" flat="flat">
+              <v-btn @click="doCopy" color="primary" flat="flat">
                 <span>Copy</span>
               </v-btn>
 
@@ -76,12 +78,15 @@ export default {
   components: {
     PasswordCreator
   },
+
   beforeCreate() {
     this.$emit("changePage", 2);
   },
   created() {
+   
     passwordBus.$on("addedPassword", data => {
       this.passwords = data;
+    
     });
   },
 
@@ -93,7 +98,10 @@ export default {
       dialog: false,
       name: "",
       pass: "",
-      passwordDialog: false
+      passwordDialog: false,
+      text: "Password",
+      editOpen: false,
+      
     };
   },
   methods: {
@@ -104,17 +112,23 @@ export default {
     },
     closeDialog() {
       this.passwordDialog = false;
+       this.editOpen = false;
     },
-    copyPassword() {
-      let vm = this
-     let copyText = vm.$refs.input
-    
+    doCopy() {
+      let input = this.$refs.input;
 
-     copyText.select();
+      this.$copyText(this.pass, input);
+      this.text = "Copied!";
 
-     document.execCommand("copy")
-
-     alert(copyText.value)
+      setTimeout(() => {
+        this.text = "Password";
+      }, 2000);
+    },
+    edit(id) {
+      this.passwordDialog = true;
+      this.editOpen = true;
+      
+      this.$refs.edit.editPassword(id)
     }
   },
   computed: {}
@@ -136,5 +150,8 @@ export default {
 }
 .weak {
   background-color: red;
+}
+
+@media screen and (min-height: 800px) {
 }
 </style>

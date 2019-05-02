@@ -5,6 +5,11 @@
         <v-card>
           <v-card-title>
             <span class="headline">Add Password</span>
+            <v-spacer></v-spacer>
+           
+             <v-btn @click="deletePassword" v-if="changePassword" outline fab color="primary">
+       <v-icon>delete</v-icon>
+    </v-btn>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -53,23 +58,36 @@
 <script>
 import { passwordBus }from '../main'
 export default {
-  props: ["passwordDialog"],
+  props: ["passwordDialog", 'changePassword'],
   components: {},
+  created() {
+      passwordBus.$on("addedPassword", data => {
+      this.data = data
+    
+    });
+     
+  },
   data() {
     return {
       website: "",
       password: "",
       show: false,
       value: 0,
-      passwordDetails: []
-    };
+      passwordDetails: [],
+      data: '',
+      id: '',
+      count: 0
+      };
   },
   methods: {
     dialogToggle() {
       this.$emit("dialogToggle");
       this.password = "";
+      this.website = "";
+     
     },
     generate() {
+      
       let password = "",
         character;
 
@@ -84,14 +102,42 @@ export default {
       }
       this.password = password;
     },
+
     addPassword() {
-      this.passwordDetails.push({website: this.website, password: this.password, strength: this.strength.toLowerCase()})
+      if(this.changePassword) {
+      this.passwordDetails.splice(this.id, 0 ,{id: this.id, website: this.website, password: this.password, strength: this.strength.toLowerCase()})
+     }else{
+       this.passwordDetails.push({id: this.count, website: this.website, password: this.password, strength: this.strength.toLowerCase()})
+     }
+      
       this.website = '';
       this.password = '';
-      
+      this.count++
       passwordBus.$emit('addedPassword', this.passwordDetails)
+     if(this.changePassword) {
+       this.data.splice(this.id + 1, 1)
+     }
+     
+    },
+    editPassword(id) {
       
+      this.website = this.data[id].website
+      this.password = this.data[id].password
+      this.id = id
+     
+    },
+    deletePassword() {
+      if(this.changePassword) {
+       this.data.splice(this.id, 1)
+     }
     }
+     
+
+     
+   
+    
+     
+    
   },
 
   computed: {
@@ -141,7 +187,13 @@ export default {
     },
     isDisabled() {
       return this.password.length > 3 && this.website.length > 2 ? false : true;
-    }
+    },
+   
+     
+    
+  },
+  watch: {
+    
   }
 };
 </script>

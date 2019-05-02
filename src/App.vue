@@ -104,7 +104,7 @@ html {
 
 @keyframes coming {
   from {
-    transform: translateY(30px);
+    transform: translateY(100px);
   }
 
   to {
@@ -115,12 +115,16 @@ html {
 
 @keyframes going {
   from {
-    transform: translateX(0);
+    transform: translateY(0);
   }
 
   to {
-    transform: translateX(100px);
+    transform: translateY(100px);
     opacity: 0;
   }
+}
+
+@media screen and (min-height: 800px) {
+ 
 }
 </style>
