@@ -1,11 +1,12 @@
 <template>
   <div class="home page">
+    <signUp v-on:closeSignUpDialog="closeSignUpDialog()" :signUpDialog="signUpDialog"/>
     <v-container fluid class="contianer">
       <v-layout row wrap>
         <v-flex>
           <div class="box sign-in">
             <v-icon color="secondary" class="lock">lock</v-icon>
-               
+
             <v-container>
               <v-layout align-center>
                 <v-flex>
@@ -30,7 +31,7 @@
                   <v-btn flat round class="my-3 secondary" large>Login</v-btn>
                   <h3>
                     Don't have an account?
-                    <span class="sign-up">sign up</span>
+                    <span @click="openSignUp" class="sign-up">sign up</span>
                   </h3>
                 </v-flex>
               </v-layout>
@@ -67,19 +68,37 @@
 </template>
 
 <script>
+import signUp from "@/components/SignUp.vue";
 export default {
+  mounted() {
+     this.$root.$on('openUp', () => {
+       this.signUpDialog = true;
+       
+    })
+  },
   created() {
     this.$emit("changePage", 1);
+   
   },
-  components: {},
+  components: {
+    signUp
+  },
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      signUpDialog: false,
     };
   },
 
-  methods: {},
+  methods: {
+   openSignUp() {
+     this.signUpDialog = true;
+   },
+    closeSignUpDialog() {
+      this.signUpDialog = false;
+    }
+  },
 
   computed: {
     emailErrors() {

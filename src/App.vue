@@ -10,12 +10,13 @@
       id="background"
     ></div>
     <Navbar :dark="dark" :nav="nav"/>
-   
+    
     <v-content class="secondary">
       <transition name="page-animate">
         <router-view v-on:changePage="updatePage($event)"></router-view>
       </transition>
     </v-content>
+    
   </v-app>
 </template>
 
@@ -28,6 +29,7 @@ export default {
   components: {
     Navbar,
     
+    
   },
   data() {
     return {
@@ -37,7 +39,8 @@ export default {
       width: "50%",
       margin: "0",
       dark: true,
-      nav: false
+      nav: false,
+      
     };
   },
 
@@ -50,6 +53,7 @@ export default {
         this.margin = "0";
         this.dark = true;
         this.nav = false;
+        
       }
       if (page === 2) {
         this.color = "#eee";
@@ -69,7 +73,10 @@ export default {
       }
     }
   },
-  watch: {}
+  openSignUp() {
+
+  }
+  
 };
 </script>
 

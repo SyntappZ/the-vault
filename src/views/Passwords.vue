@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import PasswordCreator from "@/components/passwordCreate.vue";
+import PasswordCreator from "@/components/PasswordCreate.vue";
 import { passwordBus } from "../main";
 export default {
   components: {

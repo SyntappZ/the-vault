@@ -1,8 +1,11 @@
 <template>
   <nav>
-    <v-toolbar :style="{color: this.colorChange}"  color="transparent" id="nav" flat app>
+    <v-toolbar :style="{color: this.colorChange}" color="transparent" id="nav" flat app>
       <v-toolbar-side-icon :dark="nav" @click="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title  class="pl-5">THE<span class="vault"> VAULT</span></v-toolbar-title>
+      <v-toolbar-title class="pl-5">
+        THE
+        <span class="vault">VAULT</span>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn to="/" flat :dark="dark">
@@ -28,6 +31,11 @@
           </v-avatar>
           <p class="white--text subheading mt-3 text-md-center">{{ name }}</p>
         </v-flex>
+        <v-flex>
+          <v-btn @click="opened" flat round>
+            <span>Sign Up</span>
+          </v-btn>
+        </v-flex>
       </v-layout>
 
       <v-list>
@@ -49,31 +57,39 @@
 
 <script>
 export default {
-  props: ['nav', 'dark'],
+  props: ["nav", "dark"],
   data() {
     return {
       pages: [
-        { title: "Home", icon: "home", link: "/"},
-        { title: "Vault", icon: "lock", link: "/Passwords"},
-        { title: "Notes", icon: "note", link: "/Notes"}
+        { title: "Home", icon: "home", link: "/" },
+        { title: "Vault", icon: "lock", link: "/Passwords" },
+        { title: "Notes", icon: "note", link: "/Notes" }
       ],
       drawer: false,
-      name: "John Smith",
-      
-      
+      name: "John Smith"
     };
   },
   methods: {
+    opened() {
+    if(this.$route.fullPath !== '/') {
+       this.$router.push('/')
+      setTimeout(() => {
+        this.$root.$emit('openUp')
+      }, 700);
+    }else{
+       this.$root.$emit('openUp')
+    }
+     
     
+    this.drawer = false;
+   
+    }
   },
   computed: {
     colorChange() {
-      return this.nav ? '#fff' : '#000'
+      return this.nav ? "#fff" : "#000";
     }
   }
-  
-    
-  
 };
 </script>
 
