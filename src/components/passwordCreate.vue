@@ -6,10 +6,10 @@
           <v-card-title>
             <span class="headline">Add Password</span>
             <v-spacer></v-spacer>
-           
-             <v-btn @click="deletePassword" v-if="changePassword" outline fab color="primary">
-       <v-icon>delete</v-icon>
-    </v-btn>
+
+            <v-btn @click="deletePassword()" v-if="changePassword" outline fab color="primary">
+              <v-icon>delete</v-icon>
+            </v-btn>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -56,38 +56,29 @@
 </template>
 
 <script>
-import { passwordBus }from '../main'
+import db from "./firebaseInit";
 export default {
-  props: ["passwordDialog", 'changePassword'],
+  props: ["passwordDialog", "changePassword"],
   components: {},
-  created() {
-      passwordBus.$on("addedPassword", data => {
-      this.data = data
-    
-    });
-     
-  },
+
+  created() {},
   data() {
     return {
       website: "",
       password: "",
       show: false,
       value: 0,
-      passwordDetails: [],
-      data: '',
-      id: '',
-      count: 0
-      };
+      test: [],
+      id: ''
+    };
   },
   methods: {
     dialogToggle() {
       this.$emit("dialogToggle");
       this.password = "";
       this.website = "";
-     
     },
     generate() {
-      
       let password = "",
         character;
 
@@ -104,40 +95,29 @@ export default {
     },
 
     addPassword() {
-      if(this.changePassword) {
-      this.passwordDetails.splice(this.id, 0 ,{id: this.id, website: this.website, password: this.password, strength: this.strength.toLowerCase()})
-     }else{
-       this.passwordDetails.push({id: this.count, website: this.website, password: this.password, strength: this.strength.toLowerCase()})
-     }
+      db.collection("Passwords").add({
+        website: this.website,
+        password: this.password,
+        strength: this.strength.toLowerCase()
+      }).then(() => {
+        this.password = ''
+        this.website = '';
+      })
+     
       
-      this.website = '';
-      this.password = '';
-      this.count++
-      passwordBus.$emit('addedPassword', this.passwordDetails)
-     if(this.changePassword) {
-       this.data.splice(this.id + 1, 1)
-     }
      
     },
     editPassword(id) {
-      
-      this.website = this.data[id].website
-      this.password = this.data[id].password
-      this.id = id
-     
+     this.id = id
+    
     },
     deletePassword() {
-      if(this.changePassword) {
-       this.data.splice(this.id, 1)
-     }
+      if (confirm("Are You Sure?")) {
+        
+        db.collection('Passwords').doc(this.id).delete()
+      }
+     
     }
-     
-
-     
-   
-    
-     
-    
   },
 
   computed: {
@@ -187,14 +167,9 @@ export default {
     },
     isDisabled() {
       return this.password.length > 3 && this.website.length > 2 ? false : true;
-    },
-   
-     
-    
+    }
   },
-  watch: {
-    
-  }
+  watch: {}
 };
 </script>
 

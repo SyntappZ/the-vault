@@ -32,7 +32,7 @@
               </v-flex>
             </v-layout>
           </v-container>
-          <small>*Must contain uppercase and number</small>
+          <small>*Password must contain uppercase and number</small>
          
           
         </v-card-text>

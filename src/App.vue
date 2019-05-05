@@ -122,11 +122,11 @@ html {
 
 @keyframes going {
   from {
-    transform: translateY(0);
+    transform: translateX(0);
   }
 
   to {
-    transform: translateY(100px);
+    transform: translateX(100px);
     opacity: 0;
   }
 }

@@ -1,6 +1,14 @@
 <template>
   <div class="passwordPage page">
-    <passwordCreator ref="edit" :changePassword="editOpen" :passwordDialog="passwordDialog" v-on:dialogToggle="closeDialog()"/>
+    <passwordCreator
+    
+
+      ref="edit"
+      :changePassword="editOpen"
+      :passwordDialog="passwordDialog"
+      v-on:dialogToggle="closeDialog()"
+      
+    />
     <h1 class="subheading grey--text">VAULT</h1>
 
     <v-container class="my-5">
@@ -12,8 +20,8 @@
       </v-layout>
       <v-divider class="my-3"></v-divider>
       <v-layout scrollable row wrap>
-        <v-flex xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.website">
-          <v-card flat class="text-xs-center ma-3">
+        <v-flex class="cards" xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
+          <v-card :data-id="password.id" flat class="card text-xs-center ma-3">
             <v-responsive class="pt-4">
               <v-avatar :class="`${ password.strength }`" size="100">
                 <img src="/lock-default.png">
@@ -73,7 +81,7 @@
 
 <script>
 import PasswordCreator from "@/components/PasswordCreate.vue";
-import { passwordBus } from "../main";
+import db from "@/components/firebaseInit";
 export default {
   components: {
     PasswordCreator
@@ -83,11 +91,36 @@ export default {
     this.$emit("changePage", 2);
   },
   created() {
-   
-    passwordBus.$on("addedPassword", data => {
-      this.passwords = data;
+     db.collection("Passwords").onSnapshot(res => {
+       const changes = res.docChanges();
+      
+      changes.forEach(change => {
+        if(change.type === 'added') {
+         this.passwords.push({
+            ...change.doc.data(),
+            id: change.doc.id
+         })
+         
+        }
+        else if(change.type === 'removed') {
+           
+// let card = cards.querySelector('[data-id=' + change.doc.id + ']')
+this.passwords.forEach(password => {
+ if(password.id === change.doc.id) {
+   console.log(password.length)
+  }
+})
     
-    });
+      
+          
+         
+        }
+      })
+
+
+     })
+   
+  
   },
 
   data() {
@@ -100,8 +133,7 @@ export default {
       pass: "",
       passwordDialog: false,
       text: "Password",
-      editOpen: false,
-      
+      editOpen: false
     };
   },
   methods: {
@@ -112,7 +144,7 @@ export default {
     },
     closeDialog() {
       this.passwordDialog = false;
-       this.editOpen = false;
+      this.editOpen = false;
     },
     doCopy() {
       let input = this.$refs.input;
@@ -128,7 +160,8 @@ export default {
       this.passwordDialog = true;
       this.editOpen = true;
       
-      this.$refs.edit.editPassword(id)
+      this.$refs.edit.editPassword(id);
+      
     }
   },
   computed: {}
