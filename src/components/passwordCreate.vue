@@ -61,15 +61,17 @@ export default {
   props: ["passwordDialog", "changePassword"],
   components: {},
 
-  created() {},
+  created() {
+  
+  },
   data() {
     return {
       website: "",
       password: "",
       show: false,
       value: 0,
-      test: [],
-      id: ''
+      id: '',
+      
     };
   },
   methods: {
@@ -95,7 +97,8 @@ export default {
     },
 
     addPassword() {
-      db.collection("Passwords").add({
+      if(this.changePassword) {
+          db.collection('Passwords').doc(this.id).update({
         website: this.website,
         password: this.password,
         strength: this.strength.toLowerCase()
@@ -103,18 +106,34 @@ export default {
         this.password = ''
         this.website = '';
       })
+      }else{
+         db.collection("Passwords").add({
+        website: this.website,
+        password: this.password,
+        strength: this.strength.toLowerCase()
+      }).then(() => {
+        this.password = ''
+        this.website = '';
+      })
+      }
+     
      
       
      
     },
-    editPassword(id) {
-     this.id = id
+    editPassword(id, website, password) {
+      this.id = id
+     
+     this.website = website
+     this.password = password
+
     
     },
     deletePassword() {
       if (confirm("Are You Sure?")) {
         
         db.collection('Passwords').doc(this.id).delete()
+        
       }
      
     }

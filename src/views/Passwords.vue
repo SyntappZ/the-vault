@@ -1,13 +1,10 @@
 <template>
   <div class="passwordPage page">
     <passwordCreator
-    
-
       ref="edit"
       :changePassword="editOpen"
       :passwordDialog="passwordDialog"
       v-on:dialogToggle="closeDialog()"
-      
     />
     <h1 class="subheading grey--text">VAULT</h1>
 
@@ -21,7 +18,7 @@
       <v-divider class="my-3"></v-divider>
       <v-layout scrollable row wrap>
         <v-flex class="cards" xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
-          <v-card :data-id="password.id" flat class="card text-xs-center ma-3">
+          <v-card flat class="card text-xs-center ma-3">
             <v-responsive class="pt-4">
               <v-avatar :class="`${ password.strength }`" size="100">
                 <img src="/lock-default.png">
@@ -33,7 +30,11 @@
               <v-chip :class="`${ password.strength }`" text-color="white">{{ password.strength }}</v-chip>
             </v-card-text>
             <v-card-actions>
-              <v-btn @click="edit(password.id)" flat color="grey">
+              <v-btn
+                @click="edit(password.id, password.website, password.password)"
+                flat
+                color="grey"
+              >
                 <v-icon small left>create</v-icon>
                 <span>Edit</span>
               </v-btn>
@@ -91,36 +92,32 @@ export default {
     this.$emit("changePage", 2);
   },
   created() {
-     db.collection("Passwords").onSnapshot(res => {
-       const changes = res.docChanges();
-      
+    db.collection("Passwords").onSnapshot(res => {
+      const changes = res.docChanges();
+
       changes.forEach(change => {
-        if(change.type === 'added') {
-         this.passwords.push({
+        if (change.type === "added") {
+          this.passwords.push({
             ...change.doc.data(),
             id: change.doc.id
-         })
-         
-        }
-        else if(change.type === 'removed') {
-           
-// let card = cards.querySelector('[data-id=' + change.doc.id + ']')
-this.passwords.forEach(password => {
- if(password.id === change.doc.id) {
-   console.log(password.length)
-  }
-})
-    
-      
-          
-         
-        }
-      })
+          });
+        } else if (change.type === "modified") {
+          this.passwords.map(password => {
+            if (password.id === change.doc.id) {
+              password.website = change.doc.data().website;
+              password.password = change.doc.data().password;
+              password.strength = change.doc.data().strength;
+            }
+          });
+        } else if (change.type === "removed") {
+          let removedPassword = this.passwords.filter(
+            password => password.id != change.doc.id
+          );
 
-
-     })
-   
-  
+          this.passwords = removedPassword;
+        }
+      });
+    });
   },
 
   data() {
@@ -133,7 +130,8 @@ this.passwords.forEach(password => {
       pass: "",
       passwordDialog: false,
       text: "Password",
-      editOpen: false
+      editOpen: false,
+      updateID: ""
     };
   },
   methods: {
@@ -156,12 +154,11 @@ this.passwords.forEach(password => {
         this.text = "Password";
       }, 2000);
     },
-    edit(id) {
+    edit(id, website, password) {
       this.passwordDialog = true;
       this.editOpen = true;
-      
-      this.$refs.edit.editPassword(id);
-      
+      this.$refs.edit.editPassword(id, website, password);
+      this.updateID = id;
     }
   },
   computed: {}
