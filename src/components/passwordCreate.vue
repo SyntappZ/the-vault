@@ -106,7 +106,8 @@ export default {
           db.collection('Passwords').doc(this.id).update({
         website: this.website,
         password: this.password,
-        strength: this.strength.toLowerCase()
+        strength: this.strength.toLowerCase(),
+        
       }).then(() => {
         this.password = ''
         this.website = '';
@@ -115,7 +116,9 @@ export default {
          db.collection("Passwords").add({
         website: this.website,
         password: this.password,
-        strength: this.strength.toLowerCase()
+        strength: this.strength.toLowerCase(),
+        favorite: 'grey'
+
       }).then(() => {
         this.password = ''
         this.website = '';
@@ -136,11 +139,19 @@ export default {
     },
     deletePassword() {
       if (confirm("Are You Sure?")) {
-        
         db.collection('Passwords').doc(this.id).delete()
-        
+        this.dialogToggle()
       }
      
+    },
+    changeFavorite(id, favoriteColor) {
+      if(favoriteColor === 'pink') {
+         db.collection('Passwords').doc(id).update({ favorite: 'grey' })
+      }else{
+          db.collection('Passwords').doc(id).update({ favorite: 'pink' })
+      }
+   
+
     }
   },
 

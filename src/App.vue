@@ -89,7 +89,7 @@ export default {
   transition: 0.3s ease-in-out;
 }
 html {
-  overflow-y: hidden;
+   overflow: hidden;
 }
 
 .page-animate-enter-active {
@@ -105,6 +105,7 @@ html {
   text-align: center;
   position: fixed;
   width: 100%;
+ 
  
 }
 

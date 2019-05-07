@@ -1,5 +1,5 @@
 <template>
-  <div class="passwordPage page">
+  <div id="passwordPage" class="page">
     <passwordCreator
       ref="edit"
       :changePassword="editOpen"
@@ -17,18 +17,28 @@
 
         <div>
           <v-toolbar flat class="password-counter">
-            <v-toolbar-title class="subheading">passwords</v-toolbar-title>
+           
+              <v-flex ma-3>
+                <v-overflow-btn :items="dropdown"  label="Show"></v-overflow-btn>
+              </v-flex>
+          
+            <v-toolbar-title class="subheading">favorites</v-toolbar-title>
 
+            <v-icon right color="pink">favorite</v-icon>
+            <span class="pink--text">{{ favoriteCount }}</span>
+
+            <v-divider class="ml-3" inset vertical></v-divider>
             <v-spacer></v-spacer>
-
-            <v-avatar size="35" class="green white--text ml-4 ma-2" >{{ this.strong }}</v-avatar>
-             <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
-             <v-avatar size="35" class="red white--text ma-2"> {{ this.weak }} </v-avatar>
+            <v-toolbar-title class="subheading">Passwords</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-avatar size="35" class="green white--text ml-4 ma-2">{{ this.strong }}</v-avatar>
+            <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
+            <v-avatar size="35" class="red white--text ma-2">{{ this.weak }}</v-avatar>
           </v-toolbar>
         </div>
       </v-layout>
       <v-divider class="my-3"></v-divider>
-      <v-layout row wrap>
+      <v-layout id="cards" row wrap>
         <v-flex class="cards" xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
           <v-hover>
             <v-card
@@ -37,6 +47,16 @@
               flat
               class="card text-xs-center ma-3"
             >
+              <v-flex xs12 sm3>
+                <v-btn
+                  @click="isFavorite(password.id, password.favorite)"
+                  flat
+                  icon
+                  :color="password.favorite"
+                >
+                  <v-icon>favorite</v-icon>
+                </v-btn>
+              </v-flex>
               <v-responsive class="pt-4">
                 <v-avatar :class="`${ password.strength }`" size="100">
                   <img src="/lock-default.png">
@@ -70,7 +90,7 @@
         <v-dialog v-model="dialog" max-width="290">
           <v-card>
             <v-card-title class="headline primary white--text">{{ this.name }}</v-card-title>
-            <p class="show title primary--text text-xs-center mt-3">{{ text }}</p>
+            <p class="show subheading title black--text text-xs-center mt-3">{{ text }}</p>
 
             <v-divider></v-divider>
 
@@ -110,6 +130,8 @@ export default {
   beforeCreate() {
     this.$emit("changePage", 2);
   },
+  mounted() {},
+  updated() {},
   created() {
     db.collection("Passwords").onSnapshot(res => {
       const changes = res.docChanges();
@@ -126,6 +148,7 @@ export default {
               password.website = change.doc.data().website;
               password.password = change.doc.data().password;
               password.strength = change.doc.data().strength;
+              password.favorite = change.doc.data().favorite;
             }
           });
         } else if (change.type === "removed") {
@@ -150,7 +173,11 @@ export default {
       passwordDialog: false,
       text: "Password",
       editOpen: false,
-      updateID: ""
+      updateID: "",
+      dropdown: [
+        { text: "All", callback: () => console.log("list") },
+        { text: "Favorites", callback: () => console.log("favorite") }
+      ]
     };
   },
   methods: {
@@ -178,17 +205,27 @@ export default {
       this.editOpen = true;
       this.$refs.edit.editPassword(id, website, password);
       this.updateID = id;
+    },
+    isFavorite(favoriteID, favoriteColor) {
+      this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
     }
   },
   computed: {
     strong() {
-    return this.passwords.filter(password => password.strength === 'strong').length
+      return this.passwords.filter(password => password.strength === "strong")
+        .length;
     },
-     medium() {
-    return this.passwords.filter(password => password.strength === 'medium').length
+    medium() {
+      return this.passwords.filter(password => password.strength === "medium")
+        .length;
     },
-     weak() {
-    return this.passwords.filter(password => password.strength === 'weak').length
+    weak() {
+      return this.passwords.filter(password => password.strength === "weak")
+        .length;
+    },
+    favoriteCount() {
+      return this.passwords.filter(password => password.favorite === "pink")
+        .length;
     }
   }
 };
@@ -202,8 +239,14 @@ export default {
 }
 .password-counter {
   border-radius: 50px;
-  background-color:rgba(255, 255, 255, 0.651);
-  
+  background-color: rgb(255, 255, 255);
+}
+#cards {
+  background-color: rgb(233, 233, 233);
+}
+#passwordPage {
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .strong {
