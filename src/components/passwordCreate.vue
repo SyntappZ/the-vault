@@ -32,6 +32,7 @@
                   <v-text-field
                     label="Password"
                     :type="show ? 'text' : 'password'"
+                     :error-messages="noSpaces"
                     v-model="password"
                     @click:append="show = !show"
                     :append-icon="show ? 'visibility' : 'visibility_off'"
@@ -44,11 +45,14 @@
               </v-layout>
             </v-container>
           </v-card-text>
+        
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" flat @click="dialogToggle">Close</v-btn>
             <v-btn color="primary" flat @click="addPassword" :disabled="isDisabled">Add</v-btn>
+             
           </v-card-actions>
+         
         </v-card>
       </v-dialog>
     </v-layout>
@@ -71,6 +75,7 @@ export default {
       show: false,
       value: 0,
       id: '',
+      spaces: false
       
     };
   },
@@ -185,7 +190,27 @@ export default {
       }
     },
     isDisabled() {
-      return this.password.length > 3 && this.website.length > 2 ? false : true;
+
+     
+     if(this.spaces) {
+       return true
+     }
+      if(this.password.length > 3 && this.website.length > 2) {
+        return false
+      }else{
+        return true
+      }
+     
+       
+      
+    },
+    noSpaces() {
+      let reg = new RegExp(/ /);
+      this.spaces = reg.test(this.password)
+        if (reg.test(this.password)) {
+        
+        return "No spaces allowed!";
+        }
     }
   },
   watch: {}

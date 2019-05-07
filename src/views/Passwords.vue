@@ -9,42 +9,61 @@
     <h1 class="subheading grey--text">VAULT</h1>
 
     <v-container class="my-5">
-      <v-layout>
+      <v-layout justify-space-between>
         <v-btn @click="passwordDialog = true" class="font-weight-light" color="grey" flat round>
           <span>add password</span>
           <v-icon small>add</v-icon>
         </v-btn>
+
+        <div>
+          <v-toolbar flat class="password-counter">
+            <v-toolbar-title class="subheading">passwords</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
+            <v-avatar size="35" class="green white--text ml-4 ma-2" >{{ this.strong }}</v-avatar>
+             <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
+             <v-avatar size="35" class="red white--text ma-2"> {{ this.weak }} </v-avatar>
+          </v-toolbar>
+        </div>
       </v-layout>
       <v-divider class="my-3"></v-divider>
-      <v-layout scrollable row wrap>
+      <v-layout row wrap>
         <v-flex class="cards" xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
-          <v-card flat class="card text-xs-center ma-3">
-            <v-responsive class="pt-4">
-              <v-avatar :class="`${ password.strength }`" size="100">
-                <img src="/lock-default.png">
-              </v-avatar>
-            </v-responsive>
-            <v-card-text>
-              <div class="subheading">{{ password.website }}</div>
-              <v-divider class="my-3"></v-divider>
-              <v-chip :class="`${ password.strength }`" text-color="white">{{ password.strength }}</v-chip>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                @click="edit(password.id, password.website, password.password)"
-                flat
-                color="grey"
-              >
-                <v-icon small left>create</v-icon>
-                <span>Edit</span>
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn @click="getPassword(password.website, password.password)" flat color="grey">
-                <v-icon small left>lock_open</v-icon>
-                <span>Show</span>
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+          <v-hover>
+            <v-card
+              slot-scope="{ hover }"
+              :class="`elevation-${hover ? 12 : 2}`"
+              flat
+              class="card text-xs-center ma-3"
+            >
+              <v-responsive class="pt-4">
+                <v-avatar :class="`${ password.strength }`" size="100">
+                  <img src="/lock-default.png">
+                </v-avatar>
+              </v-responsive>
+              <v-card-text>
+                <div class="subheading">{{ password.website }}</div>
+                <v-divider class="my-3"></v-divider>
+                <v-chip :class="`${ password.strength }`" text-color="white">{{ password.strength }}</v-chip>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  @click="edit(password.id, password.website, password.password)"
+                  flat
+                  color="grey"
+                >
+                  <v-icon small left>create</v-icon>
+                  <span>Edit</span>
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn @click="getPassword(password.website, password.password)" flat color="grey">
+                  <v-icon small left>lock_open</v-icon>
+                  <span>Show</span>
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-hover>
         </v-flex>
       </v-layout>
       <v-layout>
@@ -161,7 +180,17 @@ export default {
       this.updateID = id;
     }
   },
-  computed: {}
+  computed: {
+    strong() {
+    return this.passwords.filter(password => password.strength === 'strong').length
+    },
+     medium() {
+    return this.passwords.filter(password => password.strength === 'medium').length
+    },
+     weak() {
+    return this.passwords.filter(password => password.strength === 'weak').length
+    }
+  }
 };
 </script>
 
@@ -170,6 +199,11 @@ export default {
 .pass-text {
   letter-spacing: 3px;
   font-weight: 700;
+}
+.password-counter {
+  border-radius: 50px;
+  background-color:rgba(255, 255, 255, 0.651);
+  
 }
 
 .strong {

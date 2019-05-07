@@ -5,7 +5,8 @@
       backgroundColor: this.color, 
       transform: this.skew,
       width: this.width,
-      marginLeft: this.margin
+      marginLeft: this.margin,
+      
       }"
       id="background"
     ></div>
@@ -40,7 +41,7 @@ export default {
       margin: "0",
       dark: true,
       nav: false,
-      
+     
     };
   },
 
@@ -73,9 +74,7 @@ export default {
       }
     }
   },
-  openSignUp() {
-
-  }
+  
   
 };
 </script>
@@ -111,22 +110,22 @@ html {
 
 @keyframes coming {
   from {
-    transform: translateY(100px);
+   opacity: 0;
   }
 
   to {
-    transform: translateY(0);
+  
     opacity: 1;
   }
 }
 
 @keyframes going {
   from {
-    transform: translateX(0);
+   opacity: 1;
   }
 
   to {
-    transform: translateX(100px);
+   
     opacity: 0;
   }
 }
