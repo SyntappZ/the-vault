@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog  v-model="signUpDialog" persistent max-width="600px">
+    <v-dialog v-model="signUpDialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
           <span class="headline">Sign Up</span>
@@ -13,7 +13,12 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex lg12>
-                <v-text-field v-model="username"  :error-messages="usernameError" label="Username" required></v-text-field>
+                <v-text-field
+                  v-model="username"
+                  :error-messages="usernameError"
+                  label="Username"
+                  required
+                ></v-text-field>
               </v-flex>
 
               <v-flex xs12>
@@ -33,13 +38,11 @@
             </v-layout>
           </v-container>
           <small>*Password must contain uppercase and number</small>
-         
-          
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" flat @click="closeSignUpDialog">Close</v-btn>
-          <v-btn color="primary" :disabled="isDisabled" flat @click="getInfo">Sign Up</v-btn>
+          <v-btn color="primary" :disabled="isDisabled" flat @click="register">Sign Up</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -47,6 +50,7 @@
 </template>
 
 <script>
+import firebase from "firebase";
 export default {
   props: ["signUpDialog"],
   data() {
@@ -55,26 +59,39 @@ export default {
       username: "",
       email: "",
       password: "",
-      accounts: []
+      accounts: [],
+     
     };
   },
   methods: {
     closeSignUpDialog() {
+     
       this.$emit("closeSignUpDialog");
+      
     },
-    
-    getInfo() {
-      this.accounts.push({
-        username: this.username,
-        email: this.email,
-        password: this.password
-      });
+
+    register(e) {
+      e.preventDefault();
+
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then((user) => {
+          user.user.updateProfile({
+            displayName:
+              this.username.charAt(0).toUpperCase() + this.username.slice(1)
+          });
+          
+        });
+
+     this.$emit('updateUser', this.username)
+      this.$emit("closeSignUpDialog");
     }
   },
   computed: {
     usernameError() {
-      if(this.username.length > 0 && this.username.length < 3) {
-        return '3 Characters Minimum'
+      if (this.username.length > 0 && this.username.length < 3) {
+        return "3 Characters Minimum";
       }
     },
     emailErrors() {

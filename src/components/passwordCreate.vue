@@ -130,8 +130,7 @@ export default {
      
     },
     editPassword(id, website, password) {
-      this.id = id
-     
+     this.id = id
      this.website = website
      this.password = password
 

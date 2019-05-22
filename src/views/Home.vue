@@ -1,13 +1,13 @@
 <template>
   <div class="home page">
-    <signUp v-on:closeSignUpDialog="closeSignUpDialog()" :signUpDialog="signUpDialog"/>
+    <signUp v-on:updateUser="updateUser" v-on:closeSignUpDialog="closeSignUpDialog()" :signUpDialog="signUpDialog"/>
     <v-container fluid class="contianer">
       <v-layout row wrap>
         <v-flex>
-          <div class="box sign-in">
+          <div class="box sign-in" v-if="userSignedIn == false">
             <v-icon color="secondary" class="lock">lock</v-icon>
 
-            <v-container>
+            <v-container >
               <v-layout align-center>
                 <v-flex>
                   <form>
@@ -16,19 +16,18 @@
                       :error-messages="emailErrors"
                       label="E-mail"
                       required
-                      @input="$v.email.$touch()"
-                      @blur="$v.email.$touch()"
                     ></v-text-field>
                     <v-text-field
                       v-model="password"
                       :error-messages="passwordErrors"
                       label="Password"
                       required
-                      @input="$v.password.$touch()"
-                      @blur="$v.password.$touch()"
+                      :type="show ? 'text' : 'password'"
+                      @click:append="show = !show"
+                      :append-icon="show ? 'visibility' : 'visibility_off'"
                     ></v-text-field>
                   </form>
-                  <v-btn flat round class="my-3 secondary" large>Login</v-btn>
+                  <v-btn @click="signIn" flat round class="my-3 secondary" large>Login</v-btn>
                   <h3>
                     Don't have an account?
                     <span @click="openSignUp" class="sign-up">sign up</span>
@@ -36,6 +35,23 @@
                 </v-flex>
               </v-layout>
             </v-container>
+
+          </div>
+
+            <div class="box sign-in" v-else>
+            <v-icon color="secondary" class="lock">lock</v-icon>
+
+            <v-container >
+              <v-layout align-center>
+                <v-flex>
+                <h1 class="my-4">Welcome Back {{ userName }} </h1>
+                
+                  <v-btn @click="signOut" flat round class="my-3 secondary" large>Sign Out</v-btn>
+                
+                </v-flex>
+              </v-layout>
+            </v-container>
+
           </div>
         </v-flex>
         <v-flex>
@@ -58,7 +74,7 @@
                     <v-btn flat round class="my-3 primary" large>create</v-btn>
                   </v-flex>
                 </v-layout>
-              </v-container>
+              </v-container> 
             </v-responsive>
           </div>
         </v-flex>
@@ -69,17 +85,39 @@
 
 <script>
 import signUp from "@/components/SignUp.vue";
+import firebase from "firebase";
 export default {
-  mounted() {
-     this.$root.$on('openUp', () => {
-       this.signUpDialog = true;
-       
-    })
-  },
+ 
   created() {
     this.$emit("changePage", 1);
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        this.userSignedIn = true;
+      if(this.userName === '') {
+        this.userName = user.displayName
+      }
+       
+      }else{
+        this.userSignedIn = false;
+       
+        console.log('user logged out!')
+        
+      }
+    })
+   
+    
+  
+  },
+   mounted() {
+    this.$root.$on("openUp", () => {
+      this.signUpDialog = true;
+    });
    
   },
+  
+ 
+ 
+  
   components: {
     signUp
   },
@@ -88,16 +126,40 @@ export default {
       email: "",
       password: "",
       signUpDialog: false,
+      show: false,
+      userSignedIn: false,
+      userName: ''
+     
     };
   },
 
   methods: {
-   openSignUp() {
-     this.signUpDialog = true;
-   },
+    openSignUp() {
+      this.signUpDialog = true;
+    },
     closeSignUpDialog() {
       this.signUpDialog = false;
+    },
+    signIn() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+       
+
+        // this.email = '';
+        // this.password = '';
+    },
+    signOut() {
+     
+      firebase.auth().signOut()
+     
+    },
+    updateUser(name) {
+      
+     this.userName = name.charAt(0).toUpperCase() + name.slice(1)
+     this.$emit('updateUser', name)
     }
+
   },
 
   computed: {
@@ -112,7 +174,8 @@ export default {
       if (this.password.length > 0 && this.password.length < 6) {
         return "To short";
       }
-    }
+    },
+   
   }
 };
 </script>

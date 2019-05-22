@@ -10,11 +10,11 @@
       }"
       id="background"
     ></div>
-    <Navbar :dark="dark" :nav="nav"/>
+    <Navbar :Name="Name" :dark="dark" :nav="nav"/>
     
     <v-content class="secondary">
       <transition name="page-animate">
-        <router-view v-on:changePage="updatePage($event)"></router-view>
+        <router-view v-on:updateUser="updateUser" v-on:changePage="updatePage($event)"></router-view>
       </transition>
     </v-content>
     
@@ -41,6 +41,7 @@ export default {
       margin: "0",
       dark: true,
       nav: false,
+      Name: ''
      
     };
   },
@@ -72,7 +73,11 @@ export default {
         this.dark = false;
         this.nav = true;
       }
+    },
+    updateUser(name) {
+      this.Name = name.charAt(0).toUpperCase() + name.slice(1)
     }
+    
   },
   
   

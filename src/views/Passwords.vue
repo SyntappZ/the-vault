@@ -17,15 +17,11 @@
 
         <div>
           <v-toolbar flat class="password-counter">
-           
-              <v-flex ma-3>
-                <v-overflow-btn :items="dropdown"  label="Show"></v-overflow-btn>
-              </v-flex>
-          
             <v-toolbar-title class="subheading">favorites</v-toolbar-title>
-
-            <v-icon right color="pink">favorite</v-icon>
-            <span class="pink--text">{{ favoriteCount }}</span>
+            <v-btn flat round @click="filterFavorites()">
+              <v-icon color="pink">favorite</v-icon>
+              <span class="pink--text">{{ favoriteCount }}</span>
+            </v-btn>
 
             <v-divider class="ml-3" inset vertical></v-divider>
             <v-spacer></v-spacer>
@@ -34,6 +30,12 @@
             <v-avatar size="35" class="green white--text ml-4 ma-2">{{ this.strong }}</v-avatar>
             <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
             <v-avatar size="35" class="red white--text ma-2">{{ this.weak }}</v-avatar>
+
+             <v-divider class="ml-3" inset vertical></v-divider>
+
+              <v-toolbar-title class="subheading">Showing</v-toolbar-title>
+                 <v-avatar size="40" class="secondary white--text ml-4 ma-2">{{ showing }}</v-avatar>
+               
           </v-toolbar>
         </div>
       </v-layout>
@@ -128,11 +130,12 @@ export default {
   },
 
   beforeCreate() {
-    this.$emit("changePage", 2);
+   
   },
   mounted() {},
   updated() {},
   created() {
+     this.$emit("changePage", 2);
     db.collection("Passwords").onSnapshot(res => {
       const changes = res.docChanges();
 
@@ -168,11 +171,13 @@ export default {
       page: 2,
       color: "",
       dialog: false,
+      onlyFavorite: false,
       name: "",
       pass: "",
       passwordDialog: false,
       text: "Password",
       editOpen: false,
+      showing: 'All',
       updateID: "",
       dropdown: [
         { text: "All", callback: () => console.log("list") },
@@ -208,7 +213,15 @@ export default {
     },
     isFavorite(favoriteID, favoriteColor) {
       this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
+    },
+   filterFavorites() {
+      this.passwords = this.passwords.filter(password => password.favorite === 'pink')
+       
+        
+      
     }
+     
+    
   },
   computed: {
     strong() {
@@ -226,7 +239,9 @@ export default {
     favoriteCount() {
       return this.passwords.filter(password => password.favorite === "pink")
         .length;
-    }
+    },
+   
+      
   }
 };
 </script>
