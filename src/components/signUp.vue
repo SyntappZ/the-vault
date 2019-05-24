@@ -51,6 +51,7 @@
 
 <script>
 import firebase from "firebase";
+import db from "@/components/firebaseInit";
 export default {
   props: ["signUpDialog"],
   data() {
@@ -60,6 +61,7 @@ export default {
       email: "",
       password: "",
       accounts: [],
+      
      
     };
   },
@@ -72,15 +74,29 @@ export default {
 
     register(e) {
       e.preventDefault();
-
+     
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then((user) => {
-          user.user.updateProfile({
+        .then(() => {
+           let user = firebase.auth().currentUser;
+            user.updateProfile({
             displayName:
               this.username.charAt(0).toUpperCase() + this.username.slice(1)
-          });
+
+      
+        
+          }).then(() => {
+         let user = firebase.auth().currentUser;
+            db.collection('users').doc(user.uid).set({
+              id: user.uid,
+              name: user.displayName,
+              email: user.email
+
+            })
+
+
+          })
           
         });
 

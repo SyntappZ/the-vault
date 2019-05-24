@@ -61,6 +61,7 @@
 
 <script>
 import db from "./firebaseInit";
+import firebase from 'firebase'
 export default {
   props: ["passwordDialog", "changePassword"],
   components: {},
@@ -75,7 +76,8 @@ export default {
       show: false,
       value: 0,
       id: '',
-      spaces: false
+      spaces: false,
+      userId: firebase.auth().currentUser.uid
       
     };
   },
@@ -103,7 +105,8 @@ export default {
 
     addPassword() {
       if(this.changePassword) {
-          db.collection('Passwords').doc(this.id).update({
+        let user = firebase.auth().currentUser.uid
+          db.collection('users').doc(user).collection('passwords').doc(this.id).update({
         website: this.website,
         password: this.password,
         strength: this.strength.toLowerCase(),
@@ -113,7 +116,9 @@ export default {
         this.website = '';
       })
       }else{
-         db.collection("Passwords").add({
+        let user = firebase.auth().currentUser.uid
+        console.log(user)
+         db.collection('users').doc(user).collection("passwords").add({
         website: this.website,
         password: this.password,
         strength: this.strength.toLowerCase(),
@@ -138,16 +143,18 @@ export default {
     },
     deletePassword() {
       if (confirm("Are You Sure?")) {
-        db.collection('Passwords').doc(this.id).delete()
+        let user = firebase.auth().currentUser.uid
+        db.collection('users').doc(user).collection('passwords').doc(this.id).delete()
         this.dialogToggle()
       }
      
     },
     changeFavorite(id, favoriteColor) {
+      let user = firebase.auth().currentUser.uid
       if(favoriteColor === 'pink') {
-         db.collection('Passwords').doc(id).update({ favorite: 'grey' })
+         db.collection('users').doc(user).collection('passwords').doc(id).update({ favorite: 'grey' })
       }else{
-          db.collection('Passwords').doc(id).update({ favorite: 'pink' })
+          db.collection('users').doc(user).collection('passwords').doc(id).update({ favorite: 'pink' })
       }
    
 

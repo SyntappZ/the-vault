@@ -1,7 +1,7 @@
 <template>
   <nav>
     <v-toolbar :style="{color: this.colorChange}" color="transparent" id="nav" flat app>
-      <v-toolbar-side-icon :dark="nav" @click="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon :disabled="userSignedIn === false" :dark="nav" @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title class="pl-5">
         THE
         <span class="vault">VAULT</span>
@@ -12,11 +12,11 @@
           <v-icon small class="mr-1">home</v-icon>
           <span class="font-weight-light">Home</span>
         </v-btn>
-        <v-btn to="/Passwords" :dark="dark" flat>
+        <v-btn :disabled="userSignedIn === false" to="/Passwords" :dark="dark" flat>
           <v-icon small class="mr-1">lock</v-icon>
           <span class="font-weight-light">Passwords</span>
         </v-btn>
-        <v-btn to="/Notes" :dark="dark" flat>
+        <v-btn :disabled="userSignedIn === false"  to="/Notes" :dark="dark" flat>
           <v-icon small class="mr-1">notes</v-icon>
           <span class="font-weight-light">Notes</span>
         </v-btn>

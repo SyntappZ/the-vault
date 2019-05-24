@@ -124,6 +124,7 @@
 <script>
 import PasswordCreator from "@/components/PasswordCreate.vue";
 import db from "@/components/firebaseInit";
+import firebase from "firebase";
 export default {
   components: {
     PasswordCreator
@@ -136,7 +137,8 @@ export default {
   updated() {},
   created() {
      this.$emit("changePage", 2);
-    db.collection("Passwords").onSnapshot(res => {
+     let user = firebase.auth().currentUser;
+    db.collection('users').doc(user.uid).collection("passwords").onSnapshot(res => {
       const changes = res.docChanges();
 
       changes.forEach(change => {
