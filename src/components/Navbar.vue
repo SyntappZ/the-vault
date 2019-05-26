@@ -1,150 +1,176 @@
 <template>
-<div>
-  <nav>
-    <v-toolbar :style="{color: this.colorChange}" color="transparent" id="nav" flat app>
-      <v-toolbar-side-icon :disabled="userSignedIn === false" :dark="nav" @click="drawer = !drawer"></v-toolbar-side-icon>
-      <v-toolbar-title class="pl-5">
-        THE
-        <span class="vault">VAULT</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn to="/" flat :dark="dark">
-          <v-icon small class="mr-1">home</v-icon>
-          <span class="font-weight-light">Home</span>
-        </v-btn>
-        <v-btn :disabled="userSignedIn === false" to="/Passwords" :dark="dark" flat>
-          <v-icon small class="mr-1">lock</v-icon>
-          <span class="font-weight-light">Passwords</span>
-        </v-btn>
-        <v-btn :disabled="userSignedIn === false"  to="/Notes" :dark="dark" flat>
-          <v-icon small class="mr-1">notes</v-icon>
-          <span class="font-weight-light">Notes</span>
-        </v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-
-    <v-navigation-drawer app id="third" dark temporary v-model="drawer">
-      <v-layout column align-center>
-        <v-flex class="mt-5">
-          <v-avatar size="100">
-            <img src="https://api.adorable.io/avatars/148/abott@adorable.png">
-          </v-avatar>
-          <p class="white--text subheading mt-3 text-md-center">{{ userName }}</p>
-        </v-flex>
-        <v-flex v-if="userSignedIn == false">
-          <v-btn @click="opened" flat round>
-            <span>Sign Up</span>
+  <div>
+    <nav>
+      <v-toolbar :style="{color: this.colorChange}" color="transparent" id="nav" flat app>
+        <v-toolbar-side-icon
+          :disabled="userSignedIn === false"
+          :dark="nav"
+          @click="drawer = !drawer"
+        ></v-toolbar-side-icon>
+        <v-toolbar-title class="pl-5">
+          THE
+          <span class="vault">VAULT</span>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn to="/" flat :dark="dark">
+            <v-icon small class="mr-1">home</v-icon>
+            <span class="font-weight-light">Home</span>
           </v-btn>
-        </v-flex >
+          <v-btn :disabled="!userSignedIn" to="/Passwords" :dark="dark" flat>
+            <v-icon small class="mr-1">lock</v-icon>
+            <span class="font-weight-light">Passwords</span>
+          </v-btn>
+          <v-btn :disabled="!userSignedIn" to="/Notes" :dark="dark" flat>
+            <v-icon small class="mr-1">notes</v-icon>
+            <span class="font-weight-light">Notes</span>
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+
+      <v-navigation-drawer app id="third" dark temporary v-model="drawer">
+        <v-layout column align-center>
+          <v-flex class="mt-5">
+            <v-avatar size="120">
+              <img class="avatar" :src="avatar + id">
+            </v-avatar>
+            <p class="white--text subheading mt-3 text-md-center">{{ userName }}</p>
+          </v-flex>
+          <v-flex v-if="!userSignedIn">
+            <v-btn @click="opened" flat round>
+              <span>Sign Up</span>
+            </v-btn>
+          </v-flex>
           <v-flex v-else>
-          <v-btn @click="signOut" flat round>
-            <span>Sign Out</span>
-          </v-btn>
-        </v-flex>
-      </v-layout>
+            <v-btn @click="signOut" flat round>
+              <span>Sign Out</span>
+            </v-btn>
+          </v-flex>
+        </v-layout>
 
-      <v-list>
-        <v-list-tile v-for="page in pages" :key="page.title" router :to="page.link">
-          <v-list-tile-action>
-            <v-icon>{{ page.icon }}</v-icon>
-          </v-list-tile-action>
+        <v-list>
+          <v-list-tile v-for="page in pages" :key="page.title" router :to="page.link">
+            <v-list-tile-action>
+              <v-icon>{{ page.icon }}</v-icon>
+            </v-list-tile-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ page.title }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ page.title }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-     <v-layout column align-center>
-        <v-btn @click="dialog = true" class="my-4" flat round>Account details</v-btn>
-       
-     </v-layout>
-    </v-navigation-drawer>
-  </nav>
- <div id="details">
-    <div class="text-xs-center">
-      <v-dialog v-model="dialog" width="700">
-      
-        <v-card>
-          <v-card-title class="headline primary white--text" primary-title>Account Details</v-card-title>
+        <v-layout column align-center>
+          <v-btn @click="dialog = true" class="my-4" flat round>Account details</v-btn>
+        </v-layout>
+      </v-navigation-drawer>
+    </nav>
+    <div id="details">
+      <div class="text-xs-center">
+        <v-dialog v-model="dialog" width="700">
+          <v-card>
+            <v-card-title class="headline primary white--text" primary-title>Account Details</v-card-title>
 
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Name:
-                    <span class="ml-2">{{ name }}</span>
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-             <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title >Email:
-                      <span class="ml-2"> {{ email }} </span>
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-             <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Passwords Saved:
-                      <span class="ml-2"> {{ passwords }} </span>
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-             <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Notes Saved:
-                      <span class="ml-2"> {{ notes }} </span>
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    Name:
+                    <span class="ml-2">{{ userName }}</span>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    Email:
+                    <span class="ml-2">{{ email }}</span>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    Passwords Saved:
+                    <span class="ml-2">{{ totalPasswords }}</span>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    Notes Saved:
+                    <span class="ml-2">{{ totalNotes }}</span>
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+            <v-card-actions justify-center>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red white--text"
+                class="mb-3"
+                round
+                @click="deleteAccount"
+              >Delete Account</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
 
-          <v-divider></v-divider>
+            <v-divider></v-divider>
 
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
     </div>
   </div>
-
-</div>
-  
 </template>
 
 
 
 <script>
-
-
-    
-import firebase from 'firebase'
+import firebase from "firebase";
+import db from "./firebaseInit";
 export default {
-  props: ["nav", "dark", 'Name'],
-  components: {
-     
-  },
+  props: ["nav", "dark", "Name"],
+  components: {},
   created() {
+    
     firebase.auth().onAuthStateChanged(user => {
-      if(user) {
+      if (user) {
        
         this.userSignedIn = true;
 
         this.userName = this.Name;
+        this.email = user.email;
+        this.id = user.uid
         
-        if(this.userName === '') {
-          this.userName = user.displayName
+        if (this.userName === "") {
+          this.userName = user.displayName;
         }
-      }else{
+          db.collection("users")
+      .doc(user.uid)
+      .collection("passwords")
+      .onSnapshot(res => {
+        this.totalPasswords = res.docs.length;
+      });
+      
+      } else {
         this.userSignedIn = false;
-        this.userName = ''
+        this.userName = "";
+        
       }
-    })
+    });
+   
+  
+  },
+  mounted() {
+    
   },
   data() {
     return {
@@ -154,45 +180,63 @@ export default {
         { title: "Notes", icon: "note", link: "/Notes" }
       ],
       drawer: false,
-      userName: '',
+      userName: "",
       isLoggedIn: false,
       currentUser: false,
       userSignedIn: false,
       dialog: false,
-      name: '',
-      email: '',
-      passwords: '',
-      notes: '',
-      
+      email: "",
+      totalPasswords: "",
+      totalNotes: "",
+      id: '',
+      avatar: "https://api.adorable.io/avatars/167/",
     };
-  
-  
   },
   methods: {
     opened() {
-    if(this.$route.fullPath !== '/') {
-       this.$router.push('/')
-      setTimeout(() => {
-        this.$root.$emit('openUp')
-      }, 700);
-    }else{
-       this.$root.$emit('openUp')
-    }
-     
-    
-    this.drawer = false;
-   
+      if (this.$route.fullPath !== "/") {
+        this.$router.push("/");
+        setTimeout(() => {
+          this.$root.$emit("openUp");
+        }, 700);
+      } else {
+        this.$root.$emit("openUp");
+      }
+
+      this.drawer = false;
     },
-   signOut() {
-      firebase.auth().signOut().then(() => {
-        this.$router.push('/')
-      })
-    }
+    signOut() {
+      
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push("/");
+        });
+    },
+    deleteAccount() {
+      if (confirm("Are You Sure?")) {
+        let user = firebase.auth().currentUser;
+
+        user
+          .delete()
+          .then(function() {
+            alert(user.displayName + ",s account deleted!");
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+        this.dialog = false;
+      }
+    },
+  
   },
   computed: {
     colorChange() {
       return this.nav ? "#fff" : "#000";
-    }
+    },
+   
+   
   }
 };
 </script>
@@ -203,6 +247,10 @@ export default {
 }
 .nav-color {
   color: #333;
+}
+.avatar {
+  border: #333 3px solid;
+ 
 }
 </style>
 

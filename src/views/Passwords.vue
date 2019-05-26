@@ -31,11 +31,10 @@
             <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
             <v-avatar size="35" class="red white--text ma-2">{{ this.weak }}</v-avatar>
 
-             <v-divider class="ml-3" inset vertical></v-divider>
+            <v-divider class="ml-3" inset vertical></v-divider>
 
-              <v-toolbar-title class="subheading">Showing</v-toolbar-title>
-                 <v-avatar size="40" class="secondary white--text ml-4 ma-2">{{ showing }}</v-avatar>
-               
+            <v-toolbar-title class="subheading">Showing</v-toolbar-title>
+            <v-avatar size="40" class="secondary white--text ml-4 ma-2">{{ showing }}</v-avatar>
           </v-toolbar>
         </div>
       </v-layout>
@@ -125,46 +124,53 @@
 import PasswordCreator from "@/components/PasswordCreate.vue";
 import db from "@/components/firebaseInit";
 import firebase from "firebase";
+import { setTimeout } from "timers";
 export default {
   components: {
     PasswordCreator
   },
 
-  beforeCreate() {
+  beforeCreate() {},
+  mounted() {
+    this.$root.$on("opend", () => {
+      this.passwordDialog = true
+    });
    
   },
-  mounted() {},
   updated() {},
   created() {
-     this.$emit("changePage", 2);
-     let user = firebase.auth().currentUser;
-    db.collection('users').doc(user.uid).collection("passwords").onSnapshot(res => {
-      const changes = res.docChanges();
+    this.$emit("changePage", 2);
+    let user = firebase.auth().currentUser;
+    db.collection("users")
+      .doc(user.uid)
+      .collection("passwords")
+      .onSnapshot(res => {
+        const changes = res.docChanges();
 
-      changes.forEach(change => {
-        if (change.type === "added") {
-          this.passwords.push({
-            ...change.doc.data(),
-            id: change.doc.id
-          });
-        } else if (change.type === "modified") {
-          this.passwords.map(password => {
-            if (password.id === change.doc.id) {
-              password.website = change.doc.data().website;
-              password.password = change.doc.data().password;
-              password.strength = change.doc.data().strength;
-              password.favorite = change.doc.data().favorite;
-            }
-          });
-        } else if (change.type === "removed") {
-          let removedPassword = this.passwords.filter(
-            password => password.id != change.doc.id
-          );
+        changes.forEach(change => {
+          if (change.type === "added") {
+            this.passwords.push({
+              ...change.doc.data(),
+              id: change.doc.id
+            });
+          } else if (change.type === "modified") {
+            this.passwords.map(password => {
+              if (password.id === change.doc.id) {
+                password.website = change.doc.data().website;
+                password.password = change.doc.data().password;
+                password.strength = change.doc.data().strength;
+                password.favorite = change.doc.data().favorite;
+              }
+            });
+          } else if (change.type === "removed") {
+            let removedPassword = this.passwords.filter(
+              password => password.id != change.doc.id
+            );
 
-          this.passwords = removedPassword;
-        }
+            this.passwords = removedPassword;
+          }
+        });
       });
-    });
   },
 
   data() {
@@ -179,7 +185,7 @@ export default {
       passwordDialog: false,
       text: "Password",
       editOpen: false,
-      showing: 'All',
+      showing: "All",
       updateID: "",
       dropdown: [
         { text: "All", callback: () => console.log("list") },
@@ -216,14 +222,8 @@ export default {
     isFavorite(favoriteID, favoriteColor) {
       this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
     },
-   filterFavorites() {
-      this.passwords = this.passwords.filter(password => password.favorite === 'pink')
-       
-        
-      
-    }
-     
-    
+    filterFavorites() {},
+   
   },
   computed: {
     strong() {
@@ -241,9 +241,7 @@ export default {
     favoriteCount() {
       return this.passwords.filter(password => password.favorite === "pink")
         .length;
-    },
-   
-      
+    }
   }
 };
 </script>

@@ -78,9 +78,9 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-           let user = firebase.auth().currentUser;
-            user.updateProfile({
+        .then((user) => {
+           
+            user.user.updateProfile({
             displayName:
               this.username.charAt(0).toUpperCase() + this.username.slice(1)
 
@@ -111,10 +111,13 @@ export default {
       }
     },
     emailErrors() {
+      
       let regex = new RegExp(/@/);
-
-      if (this.email.length > 0 && regex.test(this.email) === false) {
+      let dotCom = new RegExp(/[.]/)
+      if(this.email.length > 0) {
+        if (regex.test(this.email) === false || dotCom.test(this.email) === false){
         return "Email not valid";
+      }
       }
     },
     passwordErrors() {

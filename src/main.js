@@ -20,6 +20,6 @@ firebase.auth().onAuthStateChanged(user => {
   }
 })
 
-export const passwordBus = new Vue();
+
 
 

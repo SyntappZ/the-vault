@@ -72,7 +72,7 @@ export default {
         this.skew = "skewX(0)";
         this.width = "0";
         this.margin = "0";
-        this.dark = false;
+        this.dark = true;
         this.nav = true;
       }
     },

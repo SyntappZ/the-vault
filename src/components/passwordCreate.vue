@@ -32,7 +32,7 @@
                   <v-text-field
                     label="Password"
                     :type="show ? 'text' : 'password'"
-                     :error-messages="noSpaces"
+                    :error-messages="noSpaces"
                     v-model="password"
                     @click:append="show = !show"
                     :append-icon="show ? 'visibility' : 'visibility_off'"
@@ -45,14 +45,12 @@
               </v-layout>
             </v-container>
           </v-card-text>
-        
+
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" flat @click="dialogToggle">Close</v-btn>
             <v-btn color="primary" flat @click="addPassword" :disabled="isDisabled">Add</v-btn>
-             
           </v-card-actions>
-         
         </v-card>
       </v-dialog>
     </v-layout>
@@ -61,13 +59,24 @@
 
 <script>
 import db from "./firebaseInit";
-import firebase from 'firebase'
+import firebase from "firebase";
 export default {
   props: ["passwordDialog", "changePassword"],
   components: {},
 
   created() {
-  
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.userId = user.uid;
+        this.userSignedIn = true;
+      } else {
+        this.userSignedIn = false;
+      }
+    });
+  },
+  mounted() {
+ 
+   
   },
   data() {
     return {
@@ -75,10 +84,11 @@ export default {
       password: "",
       show: false,
       value: 0,
-      id: '',
+      id: "",
       spaces: false,
-      userId: firebase.auth().currentUser.uid
-      
+      userId: "",
+      userSignedIn: false,
+     
     };
   },
   methods: {
@@ -104,60 +114,71 @@ export default {
     },
 
     addPassword() {
-      if(this.changePassword) {
-        let user = firebase.auth().currentUser.uid
-          db.collection('users').doc(user).collection('passwords').doc(this.id).update({
-        website: this.website,
-        password: this.password,
-        strength: this.strength.toLowerCase(),
-        
-      }).then(() => {
-        this.password = ''
-        this.website = '';
-      })
-      }else{
-        let user = firebase.auth().currentUser.uid
-        console.log(user)
-         db.collection('users').doc(user).collection("passwords").add({
-        website: this.website,
-        password: this.password,
-        strength: this.strength.toLowerCase(),
-        favorite: 'grey'
+      if (this.userSignedIn) {
+        if (this.changePassword) {
+          db.collection("users")
+            .doc(this.userId)
+            .collection("passwords")
+            .doc(this.id)
+            .update({
+              website: this.website,
+              password: this.password,
+              strength: this.strength.toLowerCase()
+            })
+            .then(() => {
+              this.password = "";
+              this.website = "";
+            });
+        } else {
+          console.log(this.userId);
 
-      }).then(() => {
-        this.password = ''
-        this.website = '';
-      })
+          db.collection("users")
+            .doc(this.userId)
+            .collection("passwords")
+            .add({
+              website: this.website,
+              password: this.password,
+              strength: this.strength.toLowerCase(),
+              favorite: "grey"
+            })
+            .then(() => {
+              this.password = "";
+              this.website = "";
+            });
+        }
       }
-     
-     
-      
-     
     },
     editPassword(id, website, password) {
-     this.id = id
-     this.website = website
-     this.password = password
-
-    
+      this.id = id;
+      this.website = website;
+      this.password = password;
     },
     deletePassword() {
-      if (confirm("Are You Sure?")) {
-        let user = firebase.auth().currentUser.uid
-        db.collection('users').doc(user).collection('passwords').doc(this.id).delete()
-        this.dialogToggle()
+      if (this.userSignedIn) {
+        if (confirm("Are You Sure?")) {
+          db.collection("users")
+            .doc(this.userId)
+            .collection("passwords")
+            .doc(this.id)
+            .delete();
+          this.dialogToggle();
+        }
       }
-     
     },
     changeFavorite(id, favoriteColor) {
-      let user = firebase.auth().currentUser.uid
-      if(favoriteColor === 'pink') {
-         db.collection('users').doc(user).collection('passwords').doc(id).update({ favorite: 'grey' })
-      }else{
-          db.collection('users').doc(user).collection('passwords').doc(id).update({ favorite: 'pink' })
+      if (favoriteColor === "pink") {
+        db.collection("users")
+          .doc(this.userId)
+          .collection("passwords")
+          .doc(id)
+          .update({ favorite: "grey" });
+      } else {
+        db.collection("users")
+          .doc(this.userId)
+          .collection("passwords")
+          .doc(id)
+          .update({ favorite: "pink" });
       }
-   
-
     }
   },
 
@@ -207,27 +228,21 @@ export default {
       }
     },
     isDisabled() {
-
-     
-     if(this.spaces) {
-       return true
-     }
-      if(this.password.length > 3 && this.website.length > 2) {
-        return false
-      }else{
-        return true
+      if (this.spaces) {
+        return true;
       }
-     
-       
-      
+      if (this.password.length > 3 && this.website.length > 2) {
+        return false;
+      } else {
+        return true;
+      }
     },
     noSpaces() {
       let reg = new RegExp(/ /);
-      this.spaces = reg.test(this.password)
-        if (reg.test(this.password)) {
-        
+      this.spaces = reg.test(this.password);
+      if (this.spaces) {
         return "No spaces allowed!";
-        }
+      }
     }
   },
   watch: {}
