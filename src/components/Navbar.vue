@@ -1,4 +1,5 @@
 <template>
+<div>
   <nav>
     <v-toolbar :style="{color: this.colorChange}" color="transparent" id="nav" flat app>
       <v-toolbar-side-icon :disabled="userSignedIn === false" :dark="nav" @click="drawer = !drawer"></v-toolbar-side-icon>
@@ -27,7 +28,7 @@
       <v-layout column align-center>
         <v-flex class="mt-5">
           <v-avatar size="100">
-            <img src="/default.png">
+            <img src="https://api.adorable.io/avatars/148/abott@adorable.png">
           </v-avatar>
           <p class="white--text subheading mt-3 text-md-center">{{ userName }}</p>
         </v-flex>
@@ -58,19 +59,76 @@
       <v-divider></v-divider>
 
      <v-layout column align-center>
-        <v-btn class="my-4" flat round>Account details</v-btn>
+        <v-btn @click="dialog = true" class="my-4" flat round>Account details</v-btn>
        
      </v-layout>
     </v-navigation-drawer>
   </nav>
+ <div id="details">
+    <div class="text-xs-center">
+      <v-dialog v-model="dialog" width="700">
+      
+        <v-card>
+          <v-card-title class="headline primary white--text" primary-title>Account Details</v-card-title>
+
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Name:
+                    <span class="ml-2">{{ name }}</span>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+             <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title >Email:
+                      <span class="ml-2"> {{ email }} </span>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+             <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Passwords Saved:
+                      <span class="ml-2"> {{ passwords }} </span>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+             <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Notes Saved:
+                      <span class="ml-2"> {{ notes }} </span>
+                </v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+  </div>
+
+</div>
+  
 </template>
 
 
 
 <script>
+
+
+    
 import firebase from 'firebase'
 export default {
   props: ["nav", "dark", 'Name'],
+  components: {
+     
+  },
   created() {
     firebase.auth().onAuthStateChanged(user => {
       if(user) {
@@ -99,7 +157,13 @@ export default {
       userName: '',
       isLoggedIn: false,
       currentUser: false,
-      userSignedIn: false
+      userSignedIn: false,
+      dialog: false,
+      name: '',
+      email: '',
+      passwords: '',
+      notes: '',
+      
     };
   
   

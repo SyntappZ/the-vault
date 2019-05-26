@@ -11,6 +11,7 @@
       id="background"
     ></div>
     <Navbar :Name="Name" :dark="dark" :nav="nav"/>
+   
     
     <v-content class="secondary">
       <transition name="page-animate">
@@ -29,6 +30,7 @@ export default {
 
   components: {
     Navbar,
+   
     
     
   },
@@ -68,8 +70,8 @@ export default {
       if (page === 3) {
         this.color = "#eee";
         this.skew = "skewX(0)";
-        this.width = "75%";
-        this.margin = "25%";
+        this.width = "0";
+        this.margin = "0";
         this.dark = false;
         this.nav = true;
       }
@@ -117,10 +119,11 @@ html {
 @keyframes coming {
   from {
    opacity: 0;
+   transform: scale(1.1);
   }
 
   to {
-  
+   transform: scale(1);
     opacity: 1;
   }
 }
@@ -128,10 +131,11 @@ html {
 @keyframes going {
   from {
    opacity: 1;
+    transform: scale(1);
   }
 
   to {
-   
+    transform: scale(0.9);
     opacity: 0;
   }
 }
