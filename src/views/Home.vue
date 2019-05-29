@@ -44,14 +44,12 @@
           <div class="box sign-in" v-else>
             <v-avatar tile size="150">
               <img class="avatar" :src="avatar + id">
-              
             </v-avatar>
 
             <v-container>
               <v-layout align-center>
                 <v-flex>
-                 
-                   <h1 class="my-4">Welcome Back {{ userName }}</h1>
+                  <h1 class="my-4">Welcome Back {{ userName }}</h1>
                   <v-btn @click="signOut" flat round class="my-3 secondary" large>Sign Out</v-btn>
                 </v-flex>
               </v-layout>
@@ -75,7 +73,14 @@
 
                     <div class="title mb-3">Create password now!</div>
 
-                    <v-btn :disabled="!userSignedIn" @click="createPassword" flat round class="my-3 primary" large>create</v-btn>
+                    <v-btn
+                      :disabled="!userSignedIn"
+                      @click="createPassword"
+                      flat
+                      round
+                      class="my-3 primary"
+                      large
+                    >create</v-btn>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -92,17 +97,15 @@ import signUp from "@/components/SignUp.vue";
 import firebase from "firebase";
 export default {
   created() {
-     
     this.$emit("changePage", 1);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.userSignedIn = true;
-        
+
         if (this.userName === "") {
           this.userName = user.displayName;
-         
         }
-       this.id = user.uid
+        this.id = user.uid;
       } else {
         this.userSignedIn = false;
 
@@ -128,7 +131,7 @@ export default {
       userSignedIn: false,
       userName: "",
       avatar: `https://api.adorable.io/avatars/167/`,
-      id: ''
+      id: ""
     };
   },
 
@@ -143,38 +146,36 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password);
     },
     signOut() {
-     
       firebase.auth().signOut();
-      this.userSignedIn = false
+      this.userSignedIn = false;
     },
     updateUser(name) {
       this.userName = name.charAt(0).toUpperCase() + name.slice(1);
       this.$emit("updateUser", name);
     },
     createPassword() {
-        this.$root.$emit("openUp");
-       this.$router.push('/Passwords');
-       
+      this.$router.push("/Passwords");
     }
   },
 
   computed: {
     emailErrors() {
       let regex = new RegExp(/@/);
-      let dotCom = new RegExp(/[.]/)
-      if(this.email.length > 0) {
-        if (regex.test(this.email) === false || dotCom.test(this.email) === false){
-        return "Email not valid";
+      let dotCom = new RegExp(/[.]/);
+      if (this.email.length > 0) {
+        if (
+          regex.test(this.email) === false ||
+          dotCom.test(this.email) === false
+        ) {
+          return "Email not valid";
+        }
       }
-      }
-      
     },
     passwordErrors() {
       if (this.password.length > 0 && this.password.length < 6) {
         return "To short";
       }
-    },
-    
+    }
   }
 };
 </script>
@@ -205,7 +206,6 @@ export default {
 .avatar {
   border: black 3px solid;
   border-radius: 5px;
-  
 }
 @media screen and (min-height: 800px) {
   .sign-in {

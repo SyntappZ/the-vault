@@ -131,12 +131,7 @@ export default {
   },
 
   beforeCreate() {},
-  mounted() {
-    this.$root.$on("opend", () => {
-      this.passwordDialog = true
-    });
-   
-  },
+  mounted() {},
   updated() {},
   created() {
     this.$emit("changePage", 2);
@@ -222,8 +217,7 @@ export default {
     isFavorite(favoriteID, favoriteColor) {
       this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
     },
-    filterFavorites() {},
-   
+    filterFavorites() {}
   },
   computed: {
     strong() {

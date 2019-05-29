@@ -1,17 +1,24 @@
 <template>
-  <div class="notes page">
-    <h1 align="center">notes</h1>
-  </div>
+<div id="note-background">
+  
+  <CreateNote v-if="loaded"/>
+</div>
+  
 </template>
 
 <script>
+import CreateNote from '../components/CreateNote'
 export default {
   created() {
     this.$emit("changePage", 3);
   },
-  components: {},
+  components: {
+    CreateNote
+  },
   data() {
-    return {};
+    return {
+      loaded: true
+    };
   },
   methods: {},
   computed: {}
@@ -19,7 +26,12 @@ export default {
 </script>
 
 <style scoped>
-
-
+#note-background {
+  width: 100%;
+  height: 100vh;
+  background-image: url('../background.svg');
+  background-size:cover;
+}
+ 
 
 </style>
