@@ -16,7 +16,7 @@
         </v-btn>
 
         <div>
-          <v-toolbar flat class="password-counter">
+          <v-toolbar flat class="tools password-counter">
             <v-toolbar-title class="subheading">favorites</v-toolbar-title>
             <v-btn flat round @click="filterFavorites()">
               <v-icon color="pink">favorite</v-icon>
@@ -34,18 +34,17 @@
             <v-divider class="ml-3" inset vertical></v-divider>
 
             <v-toolbar-title class="subheading">Showing</v-toolbar-title>
-            
+
             <v-speed-dial
               v-model="fab"
               :direction="direction"
               :open-on-hover="hover"
               :transition="transition"
-              class="fab"
             >
               <template v-slot:activator>
-                <v-btn v-model="fab" color="secondary" dark fab>
-                  <v-icon>swap_vert</v-icon>
-                  <v-icon>close</v-icon>
+                <v-btn v-model="fab" :color="fabColor" dark fab>
+                  <v-icon :color="iconColor" v-if="isIcon">{{ icon }}</v-icon>
+                  <span v-else>{{ strength }}</span>
                 </v-btn>
               </template>
               <v-btn @click="filterButtons(1)" fab small color="white">
@@ -58,21 +57,22 @@
                 <span>{{ this.medium }}</span>
               </v-btn>
               <v-btn @click="filterButtons(4)" fab dark small color="red">
-              <span>{{ this.weak }}</span>
+                <span>{{ this.weak }}</span>
               </v-btn>
-              
+               <v-btn @click="filterButtons(5)" fab small color="secondary">
+                <span>All</span>
+              </v-btn>
             </v-speed-dial>
           </v-toolbar>
         </div>
       </v-layout>
       <v-divider class="my-3"></v-divider>
       <v-layout id="cards" row wrap>
-        <v-flex class="cards" xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
+        <v-flex xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
           <v-hover>
             <v-card
               slot-scope="{ hover }"
               :class="`elevation-${hover ? 12 : 2}`"
-              flat
               class="card text-xs-center ma-3"
             >
               <v-flex xs12 sm3>
@@ -161,7 +161,6 @@ export default {
   mounted() {},
   updated() {},
   created() {
-    
     this.$emit("changePage", 2);
     let user = firebase.auth().currentUser;
     db.collection("users")
@@ -173,6 +172,10 @@ export default {
         changes.forEach(change => {
           if (change.type === "added") {
             this.passwords.push({
+              ...change.doc.data(),
+              id: change.doc.id
+            });
+            this.tempPasswords.push({
               ...change.doc.data(),
               id: change.doc.id
             });
@@ -205,6 +208,7 @@ export default {
       tabs: null,
       transition: "slide-y-transition",
       passwords: [],
+      tempPasswords: [],
       page: 2,
       color: "",
       dialog: false,
@@ -214,10 +218,13 @@ export default {
       passwordDialog: false,
       text: "Password",
       editOpen: false,
-      showing: "All",
       updateID: "",
-      fabShowing: 0
-      
+      fabShowing: 0,
+      icon: '',
+      fabColor: '#627E8F',
+      isIcon: false,
+      iconColor: '#fff',
+      strength: 'All'
     };
   },
   methods: {
@@ -250,37 +257,78 @@ export default {
       this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
     },
     filterButtons(num) {
-      console.log(num) 
+      let tempArr = [];
+      let all = []
+      let user = firebase.auth().currentUser;
+      db.collection("users")
+        .doc(user.uid)
+        .collection("passwords")
+        .onSnapshot(data => {
+          data.docs.forEach(x => all.push(x.data()));
+          data.docs.forEach(x => tempArr.push(x.data()));
+
+          if (num == 1) {
+            this.isIcon = true
+            this.passwords = tempArr.filter(
+              password => password.favorite === "pink"
+            );
+            this.icon = 'favorite'
+            this.iconColor = 'pink'
+            this.fabColor = '#fff'
+          }
+          if (num == 2) {
+             this.isIcon = false
+            this.passwords = tempArr.filter(
+              password => password.strength === "strong"
+            );
+           
+            this.strength = this.strong
+            this.fabColor = 'green'
+          }
+          if (num == 3) {
+             this.isIcon = false
+            this.passwords = tempArr.filter(
+              password => password.strength === "medium"
+            );
+            this.strength = this.medium
+            this.fabColor = 'orange'
+          }
+          if (num == 4) {
+             this.isIcon = false
+            this.passwords = tempArr.filter(
+              password => password.strength === "weak"
+            );
+            this.strength = this.weak
+            this.fabColor = 'red'
+          }
+          if (num == 5) {
+             this.isIcon = false
+            this.passwords = all;
+             this.strength = 'All'
+          this.fabColor = '#627E8F'
+          }
+         
+        });
     }
   },
   computed: {
     strong() {
-      return this.passwords.filter(password => password.strength === "strong")
-        .length;
+      return this.tempPasswords.filter(
+        password => password.strength === "strong"
+      ).length;
     },
     medium() {
-      return this.passwords.filter(password => password.strength === "medium")
-        .length;
+      return this.tempPasswords.filter(
+        password => password.strength === "medium"
+      ).length;
     },
     weak() {
-      return this.passwords.filter(password => password.strength === "weak")
+      return this.tempPasswords.filter(password => password.strength === "weak")
         .length;
     },
     favoriteCount() {
-      return this.passwords.filter(password => password.favorite === "pink")
+      return this.tempPasswords.filter(password => password.favorite === "pink")
         .length;
-    },
-    activeFab() {
-      switch (this.filterNumber) {
-        case "one":
-          return { class: "purple", icon: "account_circle" };
-        case "two":
-          return { class: "red", icon: "edit" };
-        case "three":
-          return { class: "green", icon: "keyboard_arrow_up" };
-        default:
-          return {};
-      }
     }
   }
 };
@@ -298,14 +346,20 @@ export default {
 }
 #cards {
   background-color: rgb(233, 233, 233);
-  
+}
+.tools {
+  position: relative;
+  z-index: 2;
+}
+.fab {
+  position: relative;
+  z-index: 10;
 }
 #passwordPage {
   background-color: #eee;
   overflow-y: auto;
   height: 100vh;
 }
-
 
 .strong {
   background-color: green;
