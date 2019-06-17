@@ -34,7 +34,34 @@
             <v-divider class="ml-3" inset vertical></v-divider>
 
             <v-toolbar-title class="subheading">Showing</v-toolbar-title>
-            <v-avatar size="40" class="secondary white--text ml-4 ma-2">{{ showing }}</v-avatar>
+            
+            <v-speed-dial
+              v-model="fab"
+              :direction="direction"
+              :open-on-hover="hover"
+              :transition="transition"
+              class="fab"
+            >
+              <template v-slot:activator>
+                <v-btn v-model="fab" color="secondary" dark fab>
+                  <v-icon>swap_vert</v-icon>
+                  <v-icon>close</v-icon>
+                </v-btn>
+              </template>
+              <v-btn @click="filterButtons(1)" fab small color="white">
+                <v-icon color="pink">favorite</v-icon>
+              </v-btn>
+              <v-btn @click="filterButtons(2)" fab dark small color="green">
+                <span>{{ this.strong }}</span>
+              </v-btn>
+              <v-btn @click="filterButtons(3)" fab dark small color="orange">
+                <span>{{ this.medium }}</span>
+              </v-btn>
+              <v-btn @click="filterButtons(4)" fab dark small color="red">
+              <span>{{ this.weak }}</span>
+              </v-btn>
+              
+            </v-speed-dial>
           </v-toolbar>
         </div>
       </v-layout>
@@ -134,6 +161,7 @@ export default {
   mounted() {},
   updated() {},
   created() {
+    
     this.$emit("changePage", 2);
     let user = firebase.auth().currentUser;
     db.collection("users")
@@ -170,6 +198,12 @@ export default {
 
   data() {
     return {
+      direction: "bottom",
+      fab: false,
+      fling: false,
+      hover: true,
+      tabs: null,
+      transition: "slide-y-transition",
       passwords: [],
       page: 2,
       color: "",
@@ -182,10 +216,8 @@ export default {
       editOpen: false,
       showing: "All",
       updateID: "",
-      dropdown: [
-        { text: "All", callback: () => console.log("list") },
-        { text: "Favorites", callback: () => console.log("favorite") }
-      ]
+      fabShowing: 0
+      
     };
   },
   methods: {
@@ -217,7 +249,9 @@ export default {
     isFavorite(favoriteID, favoriteColor) {
       this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
     },
-    filterFavorites() {}
+    filterButtons(num) {
+      console.log(num) 
+    }
   },
   computed: {
     strong() {
@@ -235,6 +269,18 @@ export default {
     favoriteCount() {
       return this.passwords.filter(password => password.favorite === "pink")
         .length;
+    },
+    activeFab() {
+      switch (this.filterNumber) {
+        case "one":
+          return { class: "purple", icon: "account_circle" };
+        case "two":
+          return { class: "red", icon: "edit" };
+        case "three":
+          return { class: "green", icon: "keyboard_arrow_up" };
+        default:
+          return {};
+      }
     }
   }
 };
@@ -252,12 +298,14 @@ export default {
 }
 #cards {
   background-color: rgb(233, 233, 233);
+  
 }
 #passwordPage {
   background-color: #eee;
   overflow-y: auto;
   height: 100vh;
 }
+
 
 .strong {
   background-color: green;
