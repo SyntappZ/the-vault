@@ -254,6 +254,7 @@ export default {
   background-color: rgb(233, 233, 233);
 }
 #passwordPage {
+  background-color: #eee;
   overflow-y: auto;
   height: 100vh;
 }

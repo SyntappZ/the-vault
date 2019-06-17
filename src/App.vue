@@ -11,14 +11,12 @@
       id="background"
     ></div>
     <Navbar :Name="Name" :dark="dark" :nav="nav"/>
-   
-    
+
     <v-content class="secondary">
       <transition name="page-animate">
         <router-view v-on:updateUser="updateUser" v-on:changePage="updatePage($event)"></router-view>
       </transition>
     </v-content>
-    
   </v-app>
 </template>
 
@@ -29,11 +27,10 @@ export default {
   name: "App",
 
   components: {
-    Navbar,
-   
-    
-    
+    Navbar
   },
+
+  created() {},
   data() {
     return {
       page: 1,
@@ -43,8 +40,7 @@ export default {
       margin: "0",
       dark: true,
       nav: false,
-      Name: ''
-     
+      Name: ""
     };
   },
 
@@ -57,7 +53,6 @@ export default {
         this.margin = "0";
         this.dark = true;
         this.nav = false;
-        
       }
       if (page === 2) {
         this.color = "#eee";
@@ -70,19 +65,16 @@ export default {
       if (page === 3) {
         this.color = "#eee";
         this.skew = "skewX(0)";
-        this.width = "0";
+        this.width = "100%";
         this.margin = "0";
-        this.dark = true;
-        this.nav = true;
+        this.dark = false;
+        this.nav = false;
       }
     },
     updateUser(name) {
-      this.Name = name.charAt(0).toUpperCase() + name.slice(1)
+      this.Name = name.charAt(0).toUpperCase() + name.slice(1);
     }
-    
-  },
-  
-  
+  }
 };
 </script>
 
@@ -96,7 +88,7 @@ export default {
   transition: 0.3s ease-in-out;
 }
 html {
-   overflow: hidden;
+  overflow: hidden;
 }
 
 .page-animate-enter-active {
@@ -112,25 +104,23 @@ html {
   text-align: center;
   position: fixed;
   width: 100%;
- 
- 
 }
 
 @keyframes coming {
   from {
-   opacity: 0;
-   transform: scale(1.1);
+    opacity: 0;
+    transform: scale(1.1);
   }
 
   to {
-   transform: scale(1);
+    transform: scale(1);
     opacity: 1;
   }
 }
 
 @keyframes going {
   from {
-   opacity: 1;
+    opacity: 1;
     transform: scale(1);
   }
 
@@ -141,6 +131,5 @@ html {
 }
 
 @media screen and (min-height: 800px) {
- 
 }
 </style>

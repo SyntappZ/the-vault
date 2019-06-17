@@ -62,16 +62,16 @@
               <v-container fill-height>
                 <v-layout align-center>
                   <v-flex>
-                    <h3 class="display-3 white--text">Welcome To The Vault</h3>
+                    <h3 class="mb-3 display-3 white--text">Welcome To The Vault</h3>
 
-                    <span class="subheading">
+                    <span class="subheading font-weight-thin font-italic white--text">
                       Create and store strong passwords and never have to worry about
                       forgetting them, you will get a strength check on your password or you can use the password generator and automatically get a strong password.
                     </span>
 
                     <v-divider class="my-5"></v-divider>
 
-                    <div class="title mb-3">Create password now!</div>
+                    <div class="white--text title mb-3">Create password now!</div>
 
                     <v-btn
                       :disabled="!userSignedIn"

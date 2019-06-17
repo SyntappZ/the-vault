@@ -130,7 +130,7 @@ export default {
               this.website = "";
             });
         } else {
-          console.log(this.userId);
+          
 
           db.collection("users")
             .doc(this.userId)
