@@ -252,6 +252,9 @@ export default {
   border: #333 3px solid;
  
 }
+#nav {
+  border: solid 1px #000;
+}
 </style>
 
 

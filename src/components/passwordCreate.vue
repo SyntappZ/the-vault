@@ -123,7 +123,8 @@ export default {
             .update({
               website: this.website,
               password: this.password,
-              strength: this.strength.toLowerCase()
+              strength: this.strength.toLowerCase(),
+              
             })
             .then(() => {
               this.password = "";
@@ -139,7 +140,8 @@ export default {
               website: this.website,
               password: this.password,
               strength: this.strength.toLowerCase(),
-              favorite: "grey"
+              favorite: "grey",
+              show: true
             })
             .then(() => {
               this.password = "";

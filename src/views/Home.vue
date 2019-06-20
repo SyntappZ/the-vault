@@ -1,12 +1,13 @@
 <template>
   <div class="home page">
+   
     <signUp
       v-on:updateUser="updateUser"
       v-on:closeSignUpDialog="closeSignUpDialog()"
       :signUpDialog="signUpDialog"
     />
     <v-container fluid class="contianer">
-      <v-layout row wrap>
+      <v-layout justify-space-around row wrap>
         <v-flex>
           <div class="box sign-in" v-if="!userSignedIn">
             <v-icon color="secondary" class="lock">lock</v-icon>
@@ -42,8 +43,9 @@
           </div>
 
           <div class="box sign-in" v-else>
-            <v-avatar tile size="150">
-              <img class="avatar" :src="avatar + id">
+            
+            <v-avatar class="avatar-wrap" size="150">
+              <img class="avatar" src="/lock-default.png">
             </v-avatar>
 
             <v-container>
@@ -56,6 +58,7 @@
             </v-container>
           </div>
         </v-flex>
+       
         <v-flex>
           <div class="box welcome">
             <v-responsive>
@@ -109,7 +112,7 @@ export default {
       } else {
         this.userSignedIn = false;
 
-        console.log("user logged out!");
+       
       }
     });
   },
@@ -184,7 +187,7 @@ export default {
 .sign-in {
   width: 500px;
   height: 70vh;
-  margin: 25vh auto 0 150px;
+ 
 }
 .welcome {
   width: 600px;
@@ -196,24 +199,26 @@ export default {
   padding-left: 15px;
   cursor: pointer;
 }
+
+
+ 
+
 .lock {
   font-size: 80px;
   width: 120px;
   height: 120px;
   border: solid 3px;
   border-radius: 50%;
+  margin-top: 100px;
+}
+.avatar-wrap {
+  margin-top:100px;
 }
 .avatar {
-  border: black 3px solid;
-  border-radius: 5px;
+  border: black 1px solid;
+  
 }
 @media screen and (min-height: 800px) {
-  .sign-in {
-    margin: 25vh auto 0 250px;
-  }
-  .welcome {
-    margin: 150px auto;
-  }
 }
 </style>
 

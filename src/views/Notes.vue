@@ -73,19 +73,13 @@
               {{ date }}
             </h3>
 
-            <v-divider></v-divider>
+            <v-divider ></v-divider>
             <v-textarea name="input-7-1" v-model="note" label="Note" flat auto-grow value></v-textarea>
-            <v-btn color="primary" flat round @click="addNote">save</v-btn>
+            <v-btn color="primary" :disabled="title.length < 3 || words < 1 ? true : false" flat round @click="addNote" >save</v-btn>
           </form>
         </v-container>
-      
       </div>
     </div>
-
-
-
-
-     
   </div>
 </template>
 
@@ -240,6 +234,7 @@ export default {
         this.mouseOverStar = false;
       }
     },
+
     deleteNote() {
       if (confirm("Are You Sure?")) {
         db.collection("users")
@@ -280,17 +275,21 @@ export default {
           .slice(0, 5)
           .join(" ") + "..."
       );
-    },
-  }  
-   
-  
- 
-}
+    }
+  },
+  minimumLetters() {
+    if (this.title.length < 3 || this.words < 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+};
 </script>
 
 <style scoped>
 .notes {
-  background-color: #eee;
+  
 }
 .wrap {
   width: 100%;
@@ -308,7 +307,7 @@ export default {
   height: 100vh;
   border-radius: 5px;
   overflow-y: auto;
-  background-color: rgb(224, 224, 224);
+ 
 }
 .note {
   margin-top: 50px;

@@ -16,7 +16,7 @@
         </v-btn>
 
         <div>
-          <v-toolbar flat class="tools password-counter">
+          <v-toolbar dense flat class="tools password-counter">
             <v-toolbar-title class="subheading">favorites</v-toolbar-title>
             <v-btn flat round @click="filterFavorites()">
               <v-icon color="pink">favorite</v-icon>
@@ -59,7 +59,7 @@
               <v-btn @click="filterButtons(4)" fab dark small color="red">
                 <span>{{ this.weak }}</span>
               </v-btn>
-               <v-btn @click="filterButtons(5)" fab small color="secondary">
+              <v-btn @click="filterButtons(5)" fab small color="secondary">
                 <span>All</span>
               </v-btn>
             </v-speed-dial>
@@ -68,51 +68,60 @@
       </v-layout>
       <v-divider class="my-3"></v-divider>
       <v-layout id="cards" row wrap>
-        <v-flex xs12 sm6 md4 lg3 v-for="password in passwords" :key="password.id">
-          <v-hover>
-            <v-card
-              slot-scope="{ hover }"
-              :class="`elevation-${hover ? 12 : 2}`"
-              class="card text-xs-center ma-3"
-            >
-              <v-flex xs12 sm3>
-                <v-btn
-                  @click="isFavorite(password.id, password.favorite)"
-                  flat
-                  icon
-                  :color="password.favorite"
-                >
-                  <v-icon>favorite</v-icon>
-                </v-btn>
-              </v-flex>
-              <v-responsive class="pt-4">
-                <v-avatar :class="`${ password.strength }`" size="100">
-                  <img src="/lock-default.png">
-                </v-avatar>
-              </v-responsive>
-              <v-card-text>
-                <div class="subheading">{{ password.website }}</div>
-                <v-divider class="my-3"></v-divider>
-                <v-chip :class="`${ password.strength }`" text-color="white">{{ password.strength }}</v-chip>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn
-                  @click="edit(password.id, password.website, password.password)"
-                  flat
-                  color="grey"
-                >
-                  <v-icon small left>create</v-icon>
-                  <span>Edit</span>
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn @click="getPassword(password.website, password.password)" flat color="grey">
-                  <v-icon small left>lock_open</v-icon>
-                  <span>Show</span>
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-hover>
-        </v-flex>
+        <template v-for="password in passwords">
+          <v-flex xs12 sm6 md4 lg3 class="card" v-if="password.show" :key="password.id">
+            <v-hover>
+              <v-card
+                slot-scope="{ hover }"
+                :class="`elevation-${hover ? 12 : 2}`"
+                class="card text-xs-center ma-3"
+              >
+                <v-flex xs12 sm3>
+                  <v-btn
+                    @click="isFavorite(password.id, password.favorite)"
+                    flat
+                    icon
+                    :color="password.favorite"
+                  >
+                    <v-icon>favorite</v-icon>
+                  </v-btn>
+                </v-flex>
+                <v-responsive class="pt-4">
+                  <v-avatar :class="`${ password.strength }`" size="100">
+                    <img src="/lock-default.png">
+                  </v-avatar>
+                </v-responsive>
+                <v-card-text>
+                  <div class="subheading">{{ password.website }}</div>
+                  <v-divider class="my-3"></v-divider>
+                  <v-chip
+                    :class="`${ password.strength }`"
+                    text-color="white"
+                  >{{ password.strength }}</v-chip>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn
+                    @click="edit(password.id, password.website, password.password)"
+                    flat
+                    color="grey"
+                  >
+                    <v-icon small left>create</v-icon>
+                    <span>Edit</span>
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    @click="getPassword(password.website, password.password)"
+                    flat
+                    color="grey"
+                  >
+                    <v-icon small left>lock_open</v-icon>
+                    <span>Show</span>
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-hover>
+          </v-flex>
+        </template>
       </v-layout>
       <v-layout>
         <v-dialog v-model="dialog" max-width="290">
@@ -175,10 +184,6 @@ export default {
               ...change.doc.data(),
               id: change.doc.id
             });
-            this.tempPasswords.push({
-              ...change.doc.data(),
-              id: change.doc.id
-            });
           } else if (change.type === "modified") {
             this.passwords.map(password => {
               if (password.id === change.doc.id) {
@@ -220,11 +225,12 @@ export default {
       editOpen: false,
       updateID: "",
       fabShowing: 0,
-      icon: '',
-      fabColor: '#627E8F',
+      icon: "",
+      fabColor: "#627E8F",
       isIcon: false,
-      iconColor: '#fff',
-      strength: 'All'
+      iconColor: "#fff",
+      strength: "All",
+      jeff: true
     };
   },
   methods: {
@@ -257,77 +263,82 @@ export default {
       this.$refs.edit.changeFavorite(favoriteID, favoriteColor);
     },
     filterButtons(num) {
-      let tempArr = [];
-      let all = []
       let user = firebase.auth().currentUser;
       db.collection("users")
         .doc(user.uid)
         .collection("passwords")
         .onSnapshot(data => {
-          data.docs.forEach(x => all.push(x.data()));
-          data.docs.forEach(x => tempArr.push(x.data()));
-
           if (num == 1) {
-            this.isIcon = true
-            this.passwords = tempArr.filter(
-              password => password.favorite === "pink"
-            );
-            this.icon = 'favorite'
-            this.iconColor = 'pink'
-            this.fabColor = '#fff'
+            this.isIcon = true;
+            this.passwords.forEach(password => {
+              password.show = true;
+              if (password.favorite != "pink") {
+                password.show = false;
+              }
+            });
+            this.icon = "favorite";
+            this.iconColor = "pink";
+            this.fabColor = "#fff";
           }
           if (num == 2) {
-             this.isIcon = false
-            this.passwords = tempArr.filter(
-              password => password.strength === "strong"
-            );
-           
-            this.strength = this.strong
-            this.fabColor = 'green'
+            this.isIcon = false;
+            this.passwords.forEach(password => {
+              password.show = true;
+              if (password.strength != "strong") {
+                password.show = false;
+              }
+            });
+            this.strength = this.strong;
+            this.fabColor = "green";
           }
           if (num == 3) {
-             this.isIcon = false
-            this.passwords = tempArr.filter(
-              password => password.strength === "medium"
-            );
-            this.strength = this.medium
-            this.fabColor = 'orange'
+            this.isIcon = false;
+            this.passwords.forEach(password => {
+              password.show = true;
+              if (password.strength != "medium") {
+                password.show = false;
+              }
+            });
+            this.strength = this.medium;
+            this.fabColor = "orange";
           }
           if (num == 4) {
-             this.isIcon = false
-            this.passwords = tempArr.filter(
-              password => password.strength === "weak"
-            );
-            this.strength = this.weak
-            this.fabColor = 'red'
+            this.isIcon = false;
+            this.passwords.forEach(password => {
+              password.show = true;
+              if (password.strength != "weak") {
+                password.show = false;
+              }
+            });
+            this.strength = this.weak;
+            this.fabColor = "red";
           }
           if (num == 5) {
-             this.isIcon = false
-            this.passwords = all;
-             this.strength = 'All'
-          this.fabColor = '#627E8F'
+            this.isIcon = false;
+            this.passwords.forEach(password => {
+              password.show = true;
+            });
+            this.strength = "All";
+            this.fabColor = "#627E8F";
           }
-         
         });
     }
   },
   computed: {
     strong() {
-      return this.tempPasswords.filter(
-        password => password.strength === "strong"
-      ).length;
+      return this.passwords.filter(password => password.strength === "strong")
+        .length;
     },
     medium() {
-      return this.tempPasswords.filter(
-        password => password.strength === "medium"
-      ).length;
+      return this.passwords.filter(password => password.strength === "medium")
+        .length;
     },
     weak() {
-      return this.tempPasswords.filter(password => password.strength === "weak")
+      return this.passwords.filter(password => password.strength === "weak")
         .length;
     },
     favoriteCount() {
-      return this.tempPasswords.filter(password => password.favorite === "pink")
+      return this.passwords.filter(password => password.favorite === "pink")
         .length;
     }
   }
@@ -345,18 +356,15 @@ export default {
   background-color: rgb(255, 255, 255);
 }
 #cards {
-  background-color: rgb(233, 233, 233);
+  background-color: rgba(233, 233, 233, 0.363);
 }
 .tools {
   position: relative;
   z-index: 2;
 }
-.fab {
-  position: relative;
-  z-index: 10;
-}
+
 #passwordPage {
-  background-color: #eee;
+  
   overflow-y: auto;
   height: 100vh;
 }

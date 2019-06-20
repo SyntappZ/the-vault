@@ -6,13 +6,12 @@
       transform: this.skew,
       width: this.width,
       marginLeft: this.margin,
-      
       }"
       id="background"
     ></div>
     <Navbar :Name="Name" :dark="dark" :nav="nav"/>
 
-    <v-content class="secondary">
+    <v-content class="background-img">
       <transition name="page-animate">
         <router-view v-on:updateUser="updateUser" v-on:changePage="updatePage($event)"></router-view>
       </transition>
@@ -35,9 +34,9 @@ export default {
     return {
       page: 1,
       color: "#fff",
-      skew: "skewX(30deg)",
-      width: "50%",
-      margin: "0",
+      skew: "skewX(0)",
+      width: "",
+      margin: "",
       dark: true,
       nav: false,
       Name: ""
@@ -47,15 +46,15 @@ export default {
   methods: {
     updatePage(page) {
       if (page === 1) {
-        this.color = "#fff";
+        this.color = "rgba(255, 255, 255, 0.725)";
         this.skew = "skewX(30deg)";
-        this.width = "50%";
-        this.margin = "0";
-        this.dark = true;
+        this.width = "800px";
+        this.margin = "-200px";
+        this.dark = false;
         this.nav = false;
       }
       if (page === 2) {
-        this.color = "#eee";
+        this.color = "rgba(255, 255, 255, 0.725)";
         this.skew = "skewX(0)";
         this.width = "100%";
         this.margin = "0";
@@ -63,7 +62,7 @@ export default {
         this.nav = false;
       }
       if (page === 3) {
-        this.color = "#eee";
+        this.color = "rgba(255, 255, 255, 0.725)";
         this.skew = "skewX(0)";
         this.width = "100%";
         this.margin = "0";
@@ -80,15 +79,19 @@ export default {
 
 <style>
 #background {
-  width: 50%;
+  width: 0;
   height: 100vh;
   position: absolute;
-  background-color: #fff;
-  transform: skewX(30deg);
+  background-color: rgba(255, 255, 255, 0.7);
+  transform: skewX(0);
   transition: 0.3s ease-in-out;
 }
 html {
   overflow: hidden;
+}
+.background-img {
+  background: url("/bg.jpg");
+  background-size: cover;
 }
 
 .page-animate-enter-active {
