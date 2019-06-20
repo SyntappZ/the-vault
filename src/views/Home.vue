@@ -1,6 +1,9 @@
 <template>
   <div class="home page">
-   
+    <v-snackbar v-model="snackbar" :timeout="timeout" top>
+      {{ snackbarMessage }}
+      <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <signUp
       v-on:updateUser="updateUser"
       v-on:closeSignUpDialog="closeSignUpDialog()"
@@ -43,9 +46,8 @@
           </div>
 
           <div class="box sign-in" v-else>
-            
             <v-avatar class="avatar-wrap" size="150">
-              <img class="avatar" src="/lock-default.png">
+              <img class="avatar" src="/default.png">
             </v-avatar>
 
             <v-container>
@@ -58,7 +60,7 @@
             </v-container>
           </div>
         </v-flex>
-       
+
         <v-flex>
           <div class="box welcome">
             <v-responsive>
@@ -111,8 +113,6 @@ export default {
         this.id = user.uid;
       } else {
         this.userSignedIn = false;
-
-       
       }
     });
   },
@@ -134,7 +134,10 @@ export default {
       userSignedIn: false,
       userName: "",
       avatar: `https://api.adorable.io/avatars/167/`,
-      id: ""
+      id: "",
+      snackbar: false,
+      snackbarMessage: "",
+       timeout: 5000
     };
   },
 
@@ -146,7 +149,15 @@ export default {
       this.signUpDialog = false;
     },
     signIn() {
-      firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.email, this.password)
+        .catch(error => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          this.snackbar = true;
+          this.snackbarMessage = "user not found! " + errorCode;
+        });
     },
     signOut() {
       firebase.auth().signOut();
@@ -187,7 +198,6 @@ export default {
 .sign-in {
   width: 500px;
   height: 70vh;
- 
 }
 .welcome {
   width: 600px;
@@ -200,9 +210,6 @@ export default {
   cursor: pointer;
 }
 
-
- 
-
 .lock {
   font-size: 80px;
   width: 120px;
@@ -212,11 +219,10 @@ export default {
   margin-top: 100px;
 }
 .avatar-wrap {
-  margin-top:100px;
+  margin-top: 100px;
 }
 .avatar {
   border: black 1px solid;
-  
 }
 @media screen and (min-height: 800px) {
 }

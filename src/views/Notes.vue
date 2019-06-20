@@ -1,5 +1,9 @@
 <template>
   <div class="notes page">
+    <v-snackbar v-model="snackbar" :timeout="timeout" top>
+      {{ snackbarMessage }}
+      <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <div class="wrap">
       <div class="notes-list">
         <v-card>
@@ -53,12 +57,24 @@
             <h3>Create Note</h3>
 
             <v-spacer></v-spacer>
-            <v-btn @click="newNote" icon>
-              <v-icon>note_add</v-icon>
-            </v-btn>
-            <v-btn @click="deleteNote()" icon>
-              <v-icon>delete</v-icon>
-            </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" @click="newNote" icon>
+                  <v-icon>note_add</v-icon>
+                </v-btn>
+              </template>
+              <span>New Note</span>
+            </v-tooltip>
+
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" @click="deleteNote()" icon>
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </template>
+              <span>Delete Note</span>
+            </v-tooltip>
+
             <v-btn icon>
               <v-icon>more_vert</v-icon>
             </v-btn>
@@ -73,9 +89,15 @@
               {{ date }}
             </h3>
 
-            <v-divider ></v-divider>
+            <v-divider></v-divider>
             <v-textarea name="input-7-1" v-model="note" label="Note" flat auto-grow value></v-textarea>
-            <v-btn color="primary" :disabled="title.length < 3 || words < 1 ? true : false" flat round @click="addNote" >save</v-btn>
+            <v-btn
+              color="primary"
+              :disabled="title.length < 3 || words < 1 ? true : false"
+              flat
+              round
+              @click="addNote"
+            >save</v-btn>
           </form>
         </v-container>
       </div>
@@ -148,7 +170,10 @@ export default {
       temp: [],
       editNote: false,
       noteId: "",
-      mouseOverStar: false
+      mouseOverStar: false,
+      snackbar: false,
+      snackbarMessage: "",
+      timeout: 6000
     };
   },
   methods: {
@@ -168,7 +193,11 @@ export default {
             show: true
           })
           .then(() => {
+            this.title = ''
+            this.note = ''
             this.editNote = false;
+            this.snackbar = true;
+            this.snackbarMessage = "Note Updated!";
           });
       } else {
         db.collection("users")
@@ -182,6 +211,12 @@ export default {
             preview: this.preview,
             starred: false,
             show: true
+          })
+          .then(() => {
+            this.title = ''
+            this.note = ''
+            this.snackbar = true;
+            this.snackbarMessage = "Note Saved!";
           });
       }
     },
@@ -236,17 +271,21 @@ export default {
     },
 
     deleteNote() {
-      if (confirm("Are You Sure?")) {
-        db.collection("users")
-          .doc(this.userId)
-          .collection("notes")
-          .doc(this.noteId)
-          .delete()
-          .then(() => {
-            this.noteId = "";
-            this.title = "";
-            this.note = "";
-          });
+      if (this.noteId != "") {
+        if (confirm("Are You Sure?")) {
+          db.collection("users")
+            .doc(this.userId)
+            .collection("notes")
+            .doc(this.noteId)
+            .delete()
+            .then(() => {
+              this.noteId = "";
+              this.title = "";
+              this.note = "";
+              this.snackbar = true;
+              this.snackbarMessage = "Note Deleted!";
+            });
+        }
       }
     }
   },
@@ -289,7 +328,6 @@ export default {
 
 <style scoped>
 .notes {
-  
 }
 .wrap {
   width: 100%;
@@ -307,7 +345,6 @@ export default {
   height: 100vh;
   border-radius: 5px;
   overflow-y: auto;
- 
 }
 .note {
   margin-top: 50px;

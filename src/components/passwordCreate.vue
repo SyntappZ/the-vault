@@ -1,5 +1,9 @@
 <template>
   <div class="create-password">
+    <v-snackbar v-model="snackbar" :timeout="timeout" top>
+      {{ snackbarMessage }}
+      <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <v-layout row justify-center>
       <v-dialog v-model="passwordDialog" persistent max-width="600px">
         <v-card>
@@ -74,10 +78,7 @@ export default {
       }
     });
   },
-  mounted() {
- 
-   
-  },
+  mounted() {},
   data() {
     return {
       website: "",
@@ -88,7 +89,9 @@ export default {
       spaces: false,
       userId: "",
       userSignedIn: false,
-     
+      snackbar: false,
+      snackbarMessage: "",
+      timeout: 3000
     };
   },
   methods: {
@@ -123,16 +126,15 @@ export default {
             .update({
               website: this.website,
               password: this.password,
-              strength: this.strength.toLowerCase(),
-              
+              strength: this.strength.toLowerCase()
             })
             .then(() => {
               this.password = "";
               this.website = "";
+              this.snackbar = true;
+              this.snackbarMessage = "Password Updated!"
             });
         } else {
-          
-
           db.collection("users")
             .doc(this.userId)
             .collection("passwords")
@@ -146,6 +148,8 @@ export default {
             .then(() => {
               this.password = "";
               this.website = "";
+               this.snackbar = true;
+              this.snackbarMessage = "Password Saved!"
             });
         }
       }
@@ -162,11 +166,18 @@ export default {
             .doc(this.userId)
             .collection("passwords")
             .doc(this.id)
-            .delete();
-          this.dialogToggle();
+            .delete()
+            .then(() => {
+               this.snackbar = true;
+              this.snackbarMessage = "Password Deleted!"
+              this.dialogToggle();
+            })
+          
         }
       }
     },
+
+
     changeFavorite(id, favoriteColor) {
       if (favoriteColor === "pink") {
         db.collection("users")

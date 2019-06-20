@@ -159,6 +159,13 @@ export default {
       .onSnapshot(res => {
         this.totalPasswords = res.docs.length;
       });
+
+          db.collection("users")
+      .doc(user.uid)
+      .collection("notes")
+      .onSnapshot(res => {
+        this.totalNotes = res.docs.length;
+      });
       
       } else {
         this.userSignedIn = false;
@@ -224,7 +231,7 @@ export default {
             alert(user.displayName + ",s account deleted!");
           })
           .catch(function(error) {
-            console.log(error);
+            
           });
         this.dialog = false;
       }
