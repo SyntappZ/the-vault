@@ -48,8 +48,8 @@ export default {
       if (page === 1) {
         this.color = "rgba(255, 255, 255, 0.725)";
         this.skew = "skewX(30deg)";
-        this.width = "800px";
-        this.margin = "-200px";
+        this.width = "70%";
+        this.margin = "-300px";
         this.dark = false;
         this.nav = false;
       }
@@ -133,6 +133,7 @@ html {
   }
 }
 
-@media screen and (min-height: 800px) {
+@media screen and (max-height: 800px) {
+
 }
 </style>

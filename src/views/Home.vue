@@ -9,15 +9,15 @@
       v-on:closeSignUpDialog="closeSignUpDialog()"
       :signUpDialog="signUpDialog"
     />
-    <v-container fluid class="contianer">
-      <v-layout justify-space-around row wrap>
-        <v-flex>
+    <v-container class="homeContainer" >
+      <v-layout align-center justify-space-around row fill-height>
+        <v-flex lg5>
           <div class="box sign-in" v-if="!userSignedIn">
             <v-icon color="secondary" class="lock">lock</v-icon>
 
             <v-container>
-              <v-layout align-center>
-                <v-flex>
+              <v-layout >
+                <v-flex >
                   <form>
                     <v-text-field
                       v-model="email"
@@ -61,7 +61,7 @@
           </div>
         </v-flex>
 
-        <v-flex>
+        <v-flex lg5 >
           <div class="box welcome">
             <v-responsive>
               <v-container fill-height>
@@ -74,7 +74,7 @@
                       forgetting them, you will get a strength check on your password or you can use the password generator and automatically get a strong password.
                     </span>
 
-                    <v-divider class="my-5"></v-divider>
+                    <v-divider style="width:500px; margin:auto" class="my-5"></v-divider>
 
                     <div class="white--text title mb-3">Create password now!</div>
 
@@ -195,19 +195,13 @@ export default {
 </script>
 
 <style scoped>
-.sign-in {
-  width: 500px;
-  height: 70vh;
-}
-.welcome {
-  width: 600px;
-  height: 600px;
-  margin: 50px auto;
+.homeContainer {
+  height:90vh;
 }
 .sign-up {
-  font-weight: 300;
-  padding-left: 15px;
   cursor: pointer;
+  font-weight: 300;
+  margin-left: 10px;
 }
 
 .lock {
@@ -216,10 +210,7 @@ export default {
   height: 120px;
   border: solid 3px;
   border-radius: 50%;
-  margin-top: 100px;
-}
-.avatar-wrap {
-  margin-top: 100px;
+ 
 }
 .avatar {
   border: black 1px solid;

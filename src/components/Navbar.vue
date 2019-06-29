@@ -231,7 +231,7 @@ export default {
             alert(user.displayName + ",s account deleted!");
           })
           .catch(function(error) {
-            
+            console.log(error)
           });
         this.dialog = false;
       }
