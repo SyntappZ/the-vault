@@ -18,10 +18,10 @@ i learnt a lot making this project and was very fun to make, i feel i have i nic
 ## tech used
 
  - vue
- -vuetify
- -html/css
- -javascript
- -firebase
+ - vuetify
+ - html/css
+ - javascript
+ - firebase
  
  
 
