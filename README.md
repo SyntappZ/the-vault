@@ -1,7 +1,17 @@
-# vue-password-manager
+# The vault
 
-## Date: 21/04/2019
+## features
 
-finished the layout and page animations i learnt quite a lot about vue today i feel like i understand more about props and $emit and i also learnt about lifecycle hooks, i still feel i have much to learn about these but i have a basic understanding now, v-bind is another thing i need to look into more too.
+- sign in/sign up
+- store/edit or delete your passwords/notes
+- password generator
+- password strength indicator
+- favorites
+- strength/favorites filter
 
+
+
+## making this project
+
+making this project
 
