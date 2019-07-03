@@ -23,6 +23,14 @@ i learnt a lot making this project and was very fun to make, i feel i have i nic
  - javascript
  - firebase
  
+ ## known bugs
+ 
+ - delete account not working
+ - button on the snackbar not working
+ - can still delete password after being updated
+ - fixes and responsiveness coming soon
+ 
+ 
  
 ![2019-07-03](https://user-images.githubusercontent.com/42116608/60554227-95df3300-9d2e-11e9-8256-84d8de4cdd88.png)
 
