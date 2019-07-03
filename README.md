@@ -24,6 +24,10 @@ i learnt a lot making this project and was very fun to make, i feel i have i nic
  - firebase
  
  
+![2019-07-03](https://user-images.githubusercontent.com/42116608/60554227-95df3300-9d2e-11e9-8256-84d8de4cdd88.png)
+
+![2019-07-03 (1)](https://user-images.githubusercontent.com/42116608/60554226-95df3300-9d2e-11e9-80b0-69af05ac779c.png)
+
 
 
 
