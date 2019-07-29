@@ -1,5 +1,5 @@
 # The vault
-welcome to the vault
+welcome to the vault a password manager made with vue and vuetify it can store passwords or notes, you can add, delete, edit and favorite passwords and notes, the password manager has a strength indicator and a generator so you can always have a stong password stored you can filter between strengths or favorites, the notes has a word counter and a favorites filter too.
 
 ## making this project
 
