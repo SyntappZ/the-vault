@@ -60,47 +60,39 @@ export default {
       username: "",
       email: "",
       password: "",
-      accounts: [],
-      
-     
+      accounts: []
     };
   },
   methods: {
     closeSignUpDialog() {
-     
       this.$emit("closeSignUpDialog");
-      
     },
 
     register(e) {
       e.preventDefault();
-     
+
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then((user) => {
-           
-            user.user.updateProfile({
-            displayName:
-              this.username.charAt(0).toUpperCase() + this.username.slice(1)
-
-      
-        
-          }).then(() => {
-         let user = firebase.auth().currentUser;
-            db.collection('users').doc(user.uid).set({
-              id: user.uid,
-              name: user.displayName,
-              email: user.email
-
+        .then(user => {
+          user.user
+            .updateProfile({
+              displayName:
+                this.username.charAt(0).toUpperCase() + this.username.slice(1)
             })
-
-
-          })
-          
+            .then(() => {
+              let user = firebase.auth().currentUser;
+              db.collection("users")
+                .doc(user.uid)
+                .set({
+                  id: user.uid,
+                  name: user.displayName,
+                  email: user.email
+                });
+            });
         });
 
-     this.$emit('updateUser', this.username)
+      this.$emit("updateUser", this.username);
       this.$emit("closeSignUpDialog");
     }
   },
@@ -111,13 +103,15 @@ export default {
       }
     },
     emailErrors() {
-      
       let regex = new RegExp(/@/);
-      let dotCom = new RegExp(/[.]/)
-      if(this.email.length > 0) {
-        if (regex.test(this.email) === false || dotCom.test(this.email) === false){
-        return "Email not valid";
-      }
+      let dotCom = new RegExp(/[.]/);
+      if (this.email.length > 0) {
+        if (
+          regex.test(this.email) === false ||
+          dotCom.test(this.email) === false
+        ) {
+          return "Email not valid";
+        }
       }
     },
     passwordErrors() {

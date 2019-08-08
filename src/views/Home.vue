@@ -1,6 +1,10 @@
 <template>
   <div class="home page">
-    <v-snackbar v-model="snackbar" :timeout="timeout" top>
+    <v-snackbar v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
+      {{ snackbarMessage }}
+      <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
+    <v-snackbar v-else v-model="snackbar" :timeout="timeout" bottom>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -10,8 +14,8 @@
       :signUpDialog="signUpDialog"
     />
     <v-container class="homeContainer">
-      <v-layout wrap>
-        <v-flex class="sign-in-wrap" xs12 sm12 md6 lg6 v-if="!userSignedIn">
+      <v-layout wrap justify-space-around row fill-height>
+        <v-flex class="sign-in-wrap" xs12 sm12 md5 lg5 v-if="!userSignedIn">
           <v-icon color="secondary" class="lock">lock</v-icon>
           <form>
             <v-text-field v-model="email" :error-messages="emailErrors" label="E-mail" required></v-text-field>
@@ -32,7 +36,7 @@
           </h3>
         </v-flex>
 
-        <v-flex v-else class="box sign-in" xs12 sm12 md6 lg6>
+        <v-flex v-else class="box signed-in-wrap" xs12 sm12 md5 lg5>
           <v-avatar class="avatar-wrap" size="150">
             <img class="avatar" src="/default.png" />
           </v-avatar>
@@ -41,10 +45,10 @@
           <v-btn @click="signOut" flat round class="my-3 secondary" large>Sign Out</v-btn>
         </v-flex>
 
-        <v-flex xs12 sm12 md6 lg6>
-          <h3 class="mb-3 display-3 white--text">Welcome To The Vault</h3>
+        <v-flex xs12 sm12 md5 lg5 class="welcome-wrap">
+          <h3 class="wel-text mb-3 white--text">Welcome To The Vault</h3>
 
-          <span class="subheading font-weight-thin font-italic white--text">
+          <span class="subheading font-weight-thin white--text">
             Create and store strong passwords and never have to worry about
             forgetting them, you will get a strength check on your password or you can use the password generator and automatically get a strong password.
           </span>
@@ -143,6 +147,9 @@ export default {
   },
 
   computed: {
+    pageWidth() {
+      return window.innerWidth > 1024 ? true : false;
+    },
     emailErrors() {
       let regex = new RegExp(/@/);
       let dotCom = new RegExp(/[.]/);
@@ -167,7 +174,7 @@ export default {
 <style scoped>
 .homeContainer {
   min-height: 90vh;
-  display:flex;
+  display: flex;
   align-items: center;
 }
 .sign-up {
@@ -175,23 +182,34 @@ export default {
   font-weight: 300;
   margin-left: 10px;
 }
-.sign-in-wrap{
- 
-  
+.wel-text {
+  font-size: 44px;
 }
+
 .lock {
   font-size: 80px;
   width: 120px;
   height: 120px;
   border: solid 3px;
   border-radius: 50%;
-
 }
 .avatar {
   border: black 1px solid;
 }
-@media (min-height: 1024px) {
- 
+@media (max-height: 1024px) {
+  .sign-in-wrap,
+  .signed-in-wrap,
+  .welcome-wrap {
+    margin: 50px 0;
+  }
+  .page {
+    position: static;
+  }
+}
+@media (max-width: 600px) {
+  .wel-text {
+    font-size: 26px;
+  }
 }
 </style>
 

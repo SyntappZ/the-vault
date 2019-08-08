@@ -9,7 +9,7 @@
       }"
       id="background"
     ></div>
-    <Navbar :Name="Name" :dark="dark" :nav="nav"/>
+    <Navbar :Name="Name" />
 
     <v-content class="background-img">
       <transition name="page-animate">
@@ -37,37 +37,39 @@ export default {
       skew: "skewX(0)",
       width: "",
       margin: "",
-      dark: true,
-      nav: false,
       Name: ""
     };
   },
 
   methods: {
     updatePage(page) {
-      if (page === 1) {
-        this.color = "rgba(255, 255, 255, 0.725)";
-        this.skew = "skewX(30deg)";
-        this.width = "70%";
-        this.margin = "-300px";
-        this.dark = false;
-        this.nav = false;
+      if (window.innerWidth < 1024) {
+        if (page === 1) {
+          this.color = "rgba(255, 255, 255, 0.725)";
+          this.skew = "skewX(30deg)";
+          this.width = "0%";
+          this.margin = "0";
+        }
+      } else {
+        if (page === 1) {
+          this.color = "rgba(255, 255, 255, 0.725)";
+          this.skew = "skewX(30deg)";
+          this.width = "70%";
+          this.margin = "-300px";
+        }
       }
+
       if (page === 2) {
         this.color = "rgba(255, 255, 255, 0.725)";
         this.skew = "skewX(0)";
         this.width = "100%";
         this.margin = "0";
-        this.dark = false;
-        this.nav = false;
       }
       if (page === 3) {
         this.color = "rgba(255, 255, 255, 0.725)";
         this.skew = "skewX(0)";
         this.width = "100%";
         this.margin = "0";
-        this.dark = false;
-        this.nav = false;
       }
     },
     updateUser(name) {
@@ -135,7 +137,7 @@ html {
 
 @media (max-height: 1024px) {
   html {
-  overflow-y: auto;
-}
+    overflow-y: auto;
+  }
 }
 </style>

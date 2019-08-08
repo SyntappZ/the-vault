@@ -6,33 +6,37 @@
       :passwordDialog="passwordDialog"
       v-on:dialogToggle="closeDialog()"
     />
-    <h1 class="subheading grey--text">VAULT</h1>
+    <h1 v-if="pageWidth" class="subheading grey--text">VAULT</h1>
 
-    <v-container class="my-5">
-      <v-layout justify-space-between>
-        <v-btn @click="passwordDialog = true" class="font-weight-light" color="grey" flat round>
-          <span>add password</span>
-          <v-icon small>add</v-icon>
-        </v-btn>
+    <v-container class="pass-wrap">
+      <v-layout wrap>
+        <v-flex class="add-password">
+          <v-btn @click="passwordDialog = true" class="font-weight-light" color="grey" flat round>
+            <span>add password</span>
+            <v-icon small>add</v-icon>
+          </v-btn>
+        </v-flex>
 
-        <div>
+        <v-flex>
           <v-toolbar dense flat class="tools password-counter">
-            <v-toolbar-title class="subheading">favorites</v-toolbar-title>
+            <v-toolbar-title class="tb-text subheading">favorites</v-toolbar-title>
             <v-btn flat round @click="filterFavorites()">
               <v-icon color="pink">favorite</v-icon>
               <span class="pink--text">{{ favoriteCount }}</span>
             </v-btn>
 
-            <v-divider class="ml-3" inset vertical></v-divider>
-            <v-spacer></v-spacer>
-            <v-toolbar-title class="subheading">Passwords</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-avatar size="35" class="green white--text ml-4 ma-2">{{ this.strong }}</v-avatar>
-            <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
-            <v-avatar size="35" class="red white--text ma-2">{{ this.weak }}</v-avatar>
+            <v-divider v-if="pageWidth" class="ml-3" inset vertical></v-divider>
+            <v-spacer v-if="pageWidth"></v-spacer>
+            <v-toolbar-title v-if="pageWidth" class="tb-text subheading">Passwords</v-toolbar-title>
 
-            <v-divider class="ml-3" inset vertical></v-divider>
-
+            <div v-if="pageWidth">
+              <v-avatar size="35" class="green white--text ml-4 ma-2">{{ this.strong }}</v-avatar>
+              <v-avatar size="35" class="orange white--text ma-2">{{ this.medium }}</v-avatar>
+              <v-avatar size="35" class="red white--text ma-2">{{ this.weak }}</v-avatar>
+            </div>
+            <v-spacer v-if="pageWidth"></v-spacer>
+            <v-divider v-if="pageWidth" class="ml-3" inset vertical></v-divider>
+            <v-spacer v-if="!pageWidth"></v-spacer>
             <v-toolbar-title class="subheading">Showing</v-toolbar-title>
 
             <v-speed-dial
@@ -64,9 +68,11 @@
               </v-btn>
             </v-speed-dial>
           </v-toolbar>
-        </div>
+        </v-flex>
       </v-layout>
+
       <v-divider class="my-3"></v-divider>
+
       <v-layout id="cards" row wrap>
         <template v-for="password in passwords">
           <v-flex xs12 sm6 md4 lg3 class="card" v-if="password.show" :key="password.id">
@@ -88,7 +94,7 @@
                 </v-flex>
                 <v-responsive class="pt-4">
                   <v-avatar :class="`${ password.strength }`" size="100">
-                    <img src="/lock-default.png">
+                    <img src="/lock-default.png" />
                   </v-avatar>
                 </v-responsive>
                 <v-card-text>
@@ -340,6 +346,9 @@ export default {
     favoriteCount() {
       return this.passwords.filter(password => password.favorite === "pink")
         .length;
+    },
+    pageWidth() {
+      return window.innerWidth > 1024 ? true : false;
     }
   }
 };
@@ -357,6 +366,7 @@ export default {
 }
 #cards {
   background-color: rgba(233, 233, 233, 0.363);
+  margin-bottom: 50px;
 }
 .tools {
   position: relative;
@@ -364,7 +374,6 @@ export default {
 }
 
 #passwordPage {
-  
   overflow-y: auto;
   height: 100vh;
 }
@@ -378,7 +387,25 @@ export default {
 .weak {
   background-color: red;
 }
+.pass-wrap {
+  margin-top: 50px;
+}
 
-@media screen and (min-height: 800px) {
+@media (max-width: 1024px) {
+  .add-password {
+    margin: 30px 0;
+  }
+  .pass-wrap {
+    margin: 0;
+  }
+}
+
+@media (max-width: 600px) {
+ .tools {
+   display:flex;
+
+ }
+  
+ 
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
   <div>
     <nav>
-      <v-toolbar :style="{color: this.colorChange}" color="transparent" id="nav" flat app>
+      <v-toolbar id="nav" flat app>
         <v-toolbar-side-icon
           :disabled="userSignedIn === false"
-          :dark="nav"
+          :color="navColor"
           @click="drawer = !drawer"
         ></v-toolbar-side-icon>
         <v-toolbar-title class="pl-5">
@@ -12,16 +12,16 @@
           <span class="vault">VAULT</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-toolbar-items>
-          <v-btn to="/" flat :dark="dark">
+        <v-toolbar-items v-if="pageWidth">
+          <v-btn to="/" flat>
             <v-icon small class="mr-1">home</v-icon>
             <span class="font-weight-light">Home</span>
           </v-btn>
-          <v-btn :disabled="!userSignedIn" to="/Passwords" :dark="dark" flat>
+          <v-btn :disabled="!userSignedIn" to="/Passwords" flat>
             <v-icon small class="mr-1">lock</v-icon>
             <span class="font-weight-light">Passwords</span>
           </v-btn>
-          <v-btn :disabled="!userSignedIn" to="/Notes" :dark="dark" flat>
+          <v-btn :disabled="!userSignedIn" to="/Notes" flat>
             <v-icon small class="mr-1">notes</v-icon>
             <span class="font-weight-light">Notes</span>
           </v-btn>
@@ -32,9 +32,9 @@
         <v-layout column align-center>
           <v-flex class="mt-5">
             <v-avatar size="120">
-              <img class="avatar" :src="avatar + id">
+              <img class="avatar" :src="avatar + id" />
             </v-avatar>
-            <p class="white--text subheading mt-3 text-md-center">{{ userName }}</p>
+            <p class="name white--text subheading mt-3">{{ userName }}</p>
           </v-flex>
           <v-flex v-if="!userSignedIn">
             <v-btn @click="opened" flat round>
@@ -137,48 +137,40 @@
 import firebase from "firebase";
 import db from "./firebaseInit";
 export default {
-  props: ["nav", "dark", "Name"],
+  props: ["Name"],
   components: {},
   created() {
-    
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-       
         this.userSignedIn = true;
 
         this.userName = this.Name;
         this.email = user.email;
-        this.id = user.uid
-        
+        this.id = user.uid;
+
         if (this.userName === "") {
           this.userName = user.displayName;
         }
-          db.collection("users")
-      .doc(user.uid)
-      .collection("passwords")
-      .onSnapshot(res => {
-        this.totalPasswords = res.docs.length;
-      });
+        db.collection("users")
+          .doc(user.uid)
+          .collection("passwords")
+          .onSnapshot(res => {
+            this.totalPasswords = res.docs.length;
+          });
 
-          db.collection("users")
-      .doc(user.uid)
-      .collection("notes")
-      .onSnapshot(res => {
-        this.totalNotes = res.docs.length;
-      });
-      
+        db.collection("users")
+          .doc(user.uid)
+          .collection("notes")
+          .onSnapshot(res => {
+            this.totalNotes = res.docs.length;
+          });
       } else {
         this.userSignedIn = false;
         this.userName = "";
-        
       }
     });
-   
-  
   },
-  mounted() {
-    
-  },
+  mounted() {},
   data() {
     return {
       pages: [
@@ -195,8 +187,8 @@ export default {
       email: "",
       totalPasswords: "",
       totalNotes: "",
-      id: '',
-      avatar: "https://api.adorable.io/avatars/167/",
+      id: "",
+      avatar: "https://api.adorable.io/avatars/167/"
     };
   },
   methods: {
@@ -213,7 +205,6 @@ export default {
       this.drawer = false;
     },
     signOut() {
-      
       firebase
         .auth()
         .signOut()
@@ -231,19 +222,22 @@ export default {
             alert(user.displayName + ",s account deleted!");
           })
           .catch(function(error) {
-            console.log(error)
+            console.log(error);
           });
         this.dialog = false;
       }
-    },
-  
+    }
   },
   computed: {
     colorChange() {
       return this.nav ? "#fff" : "#000";
     },
-   
-   
+    pageWidth() {
+      return window.innerWidth > 1024 ? true : false;
+    },
+    navColor() {
+      return window.innerWidth > 1024 ? "black--text" : "white--text";
+    }
   }
 };
 </script>
@@ -257,10 +251,19 @@ export default {
 }
 .avatar {
   border: #333 3px solid;
- 
+}
+.name {
+  text-align: center;
 }
 #nav {
-  border: solid 1px #000;
+  background-color: transparent;
+}
+
+@media (max-width: 1024px) {
+  #nav {
+    background-color: #627e8f;
+    color: white;
+  }
 }
 </style>
 

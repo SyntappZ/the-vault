@@ -1,6 +1,10 @@
 <template>
   <div class="create-password">
-    <v-snackbar v-model="snackbar" :timeout="timeout" top>
+    <v-snackbar v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
+      {{ snackbarMessage }}
+      <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
+    <v-snackbar v-else v-model="snackbar" :timeout="timeout" bottom>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -132,7 +136,7 @@ export default {
               this.password = "";
               this.website = "";
               this.snackbar = true;
-              this.snackbarMessage = "Password Updated!"
+              this.snackbarMessage = "Password Updated!";
             });
         } else {
           db.collection("users")
@@ -148,8 +152,8 @@ export default {
             .then(() => {
               this.password = "";
               this.website = "";
-               this.snackbar = true;
-              this.snackbarMessage = "Password Saved!"
+              this.snackbar = true;
+              this.snackbarMessage = "Password Saved!";
             });
         }
       }
@@ -168,15 +172,13 @@ export default {
             .doc(this.id)
             .delete()
             .then(() => {
-               this.snackbar = true;
-              this.snackbarMessage = "Password Deleted!"
+              this.snackbar = true;
+              this.snackbarMessage = "Password Deleted!";
               this.dialogToggle();
-            })
-          
+            });
         }
       }
     },
-
 
     changeFavorite(id, favoriteColor) {
       if (favoriteColor === "pink") {
@@ -196,6 +198,9 @@ export default {
   },
 
   computed: {
+    pageWidth() {
+      return window.innerWidth > 1024 ? true : false;
+    },
     scorePassword() {
       let score = 0;
       if (this.password === "") return score;

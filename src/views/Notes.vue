@@ -1,11 +1,23 @@
 <template>
   <div class="notes page">
-    <v-snackbar v-model="snackbar" :timeout="timeout" top>
+    <v-snackbar v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
+    <v-snackbar v-else v-model="snackbar" :timeout="timeout" bottom>
+      {{ snackbarMessage }}
+      <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
+
+    <v-btn class="mt-4" v-if="!pageWidth" color="primary" flat dark @click="sheet = true">
+       <v-icon>list</v-icon>
+       <span class="pl-1">Notes List</span>
+      
+      
+      </v-btn>
+
     <div class="wrap">
-      <div class="notes-list">
+      <div class="notes-list" v-if="pageWidth">
         <v-card>
           <v-toolbar color="primary" flat dark>
             <v-toolbar-title>Notes</v-toolbar-title>
@@ -48,6 +60,56 @@
             </template>
           </v-list>
         </v-card>
+      </div>
+
+      <div class="text-center" v-if="!pageWidth">
+        <v-bottom-sheet v-model="sheet">
+          <div class="notes-list">
+            <v-card>
+              <v-toolbar color="primary" flat dark>
+                <v-toolbar-title>Notes</v-toolbar-title>
+
+                <v-spacer></v-spacer>
+
+                <v-btn @click="toggleStarFilter()" icon>
+                  <v-icon v-if="starsOnly == false" color="white">star_border</v-icon>
+
+                  <v-icon v-else color="white">star</v-icon>
+                </v-btn>
+              </v-toolbar>
+
+              <v-list two-line dark>
+                <template v-for="(note, index) in notes">
+                  <v-list-tile
+                    :key="note.id"
+                    avatar
+                    ripple
+                    v-if="note.show"
+                    @click="displayNote(note.id, note.title, note.note)"
+                  >
+                    <v-list-tile-content>
+                      <v-list-tile-title>{{ note.title }}</v-list-tile-title>
+
+                      <v-list-tile-sub-title class="font-weight-thin">{{ note.preview }}</v-list-tile-sub-title>
+                      <v-list-tile-action-text>{{ note.words }} words</v-list-tile-action-text>
+                    </v-list-tile-content>
+
+                    <v-list-tile-action>
+                      <v-list-tile-action-text>{{ note.date }}</v-list-tile-action-text>
+                      <v-btn @click="starToggle(note.starred, note.id)" icon>
+                        <v-icon v-if="note.starred == false" color="grey lighten-1">star_border</v-icon>
+
+                        <v-icon v-else color="yellow darken-2">star</v-icon>
+                      </v-btn>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < note.length" :key="index"></v-divider>
+                </template>
+              </v-list>
+            </v-card>
+            <v-btn v-if="!pageWidth" color="white" flat dark @click="sheet = false">Close</v-btn>
+          </div>
+        </v-bottom-sheet>
       </div>
 
       <div class="notes-area">
@@ -173,7 +235,8 @@ export default {
       mouseOverStar: false,
       snackbar: false,
       snackbarMessage: "",
-      timeout: 6000
+      timeout: 6000,
+      sheet: false
     };
   },
   methods: {
@@ -193,8 +256,8 @@ export default {
             show: true
           })
           .then(() => {
-            this.title = ''
-            this.note = ''
+            this.title = "";
+            this.note = "";
             this.editNote = false;
             this.snackbar = true;
             this.snackbarMessage = "Note Updated!";
@@ -213,8 +276,8 @@ export default {
             show: true
           })
           .then(() => {
-            this.title = ''
-            this.note = ''
+            this.title = "";
+            this.note = "";
             this.snackbar = true;
             this.snackbarMessage = "Note Saved!";
           });
@@ -267,6 +330,7 @@ export default {
         this.title = title;
         this.note = note;
         this.mouseOverStar = false;
+        this.sheet = false;
       }
     },
 
@@ -290,6 +354,9 @@ export default {
     }
   },
   computed: {
+    pageWidth() {
+      return window.innerWidth > 1024 ? true : false;
+    },
     date() {
       let today = new Date();
       let date =
@@ -327,7 +394,6 @@ export default {
 </script>
 
 <style scoped>
-
 .wrap {
   width: 100%;
   height: 100vh;
@@ -337,7 +403,9 @@ export default {
 .notes-list {
   width: 20%;
   height: 92vh;
+  overflow-y:auto;
   background-color: rgb(63, 63, 63);
+  padding-bottom: 70px;
 }
 .notes-area {
   width: 80%;
@@ -349,11 +417,24 @@ export default {
   margin-top: 50px;
   width: 70%;
   background-color: #fff;
-  height: 80vh;
+  min-height: 80vh;
   border-radius: 10px;
-  overflow-y: auto;
 }
 .note-tool {
   border-radius: 10px;
+}
+@media (max-width: 1024px) {
+  .notes-area {
+    width: 100%;
+  }
+  .note {
+    width: 95%;
+    margin-top: 10px;
+  }
+  .notes-list {
+    width: 100%;
+    margin: auto;
+    padding-bottom: 10px;
+  }
 }
 </style>
