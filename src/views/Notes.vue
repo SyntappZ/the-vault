@@ -9,7 +9,7 @@
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
 
-    <v-btn class="mt-4" v-if="!pageWidth" color="primary" flat dark @click="sheet = true">
+    <v-btn class="mt-4" v-if="!pageWidth" color="secondary" outline round flat @click="sheet = true">
        <v-icon>list</v-icon>
        <span class="pl-1">Notes List</span>
       
@@ -417,8 +417,9 @@ export default {
   margin-top: 50px;
   width: 70%;
   background-color: #fff;
-  min-height: 80vh;
+  height: 80vh;
   border-radius: 10px;
+  overflow-y: auto;
 }
 .note-tool {
   border-radius: 10px;
@@ -434,7 +435,7 @@ export default {
   .notes-list {
     width: 100%;
     margin: auto;
-    padding-bottom: 10px;
+    padding-bottom: 50px;
   }
 }
 </style>
