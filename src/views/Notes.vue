@@ -1,6 +1,6 @@
 <template>
   <div class="notes page">
-    <v-snackbar v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
+    <v-snackbar class="snackbarToFront" v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -70,7 +70,7 @@
                 <v-toolbar-title>Notes</v-toolbar-title>
 
                 <v-spacer></v-spacer>
-
+                   <v-btn round color="white" flat dark @click="sheet = false">Close</v-btn>
                 <v-btn @click="toggleStarFilter()" icon>
                   <v-icon v-if="starsOnly == false" color="white">star_border</v-icon>
 
@@ -107,7 +107,7 @@
                 </template>
               </v-list>
             </v-card>
-            <v-btn v-if="!pageWidth" color="white" flat dark @click="sheet = false">Close</v-btn>
+            <!-- <v-btn class="closeBtn" color="white" flat dark @click="sheet = false">Close</v-btn> -->
           </div>
         </v-bottom-sheet>
       </div>
@@ -424,18 +424,23 @@ export default {
 .note-tool {
   border-radius: 10px;
 }
+.closeBtn {
+    margin: 20px;
+  }
 @media (max-width: 800px) {
   .notes-area {
     width: 100%;
   }
   .note {
     width: 95%;
-    margin-top: 10px;
+    margin: 10px auto;
+    padding-bottom:100px;
   }
   .notes-list {
     width: 100%;
     margin: auto;
-    padding-bottom: 50px;
+     padding-bottom:100px;
   }
+  
 }
 </style>

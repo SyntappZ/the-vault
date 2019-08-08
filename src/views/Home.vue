@@ -1,10 +1,10 @@
 <template>
   <div class="home page">
-    <v-snackbar v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
+    <v-snackbar class="snackbarToFront" v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
-    <v-snackbar v-else v-model="snackbar" :timeout="timeout" bottom>
+    <v-snackbar  v-else v-model="snackbar" :timeout="timeout" bottom>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>
@@ -134,8 +134,11 @@ export default {
         });
     },
     signOut() {
-      firebase.auth().signOut();
-      this.userSignedIn = false;
+      firebase.auth().signOut().then(() => {
+         this.userSignedIn = false;
+      window.location.reload(true)
+      });
+     
     },
     updateUser(name) {
       this.userName = name.charAt(0).toUpperCase() + name.slice(1);

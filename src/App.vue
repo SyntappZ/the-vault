@@ -110,6 +110,10 @@ html {
   position: fixed;
   width: 100%;
 }
+.snackbarToFront {
+  position: absolute;
+  z-index: 10;
+}
 
 @keyframes coming {
   from {

@@ -398,6 +398,9 @@ export default {
   .pass-wrap {
     margin: 0;
   }
+  #cards {
+  margin-bottom: 100px;
+}
 }
 
 @media (max-width: 600px) {

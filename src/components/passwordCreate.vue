@@ -1,6 +1,6 @@
 <template>
   <div class="create-password">
-    <v-snackbar v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
+    <v-snackbar class="snackbarToFront" v-if="pageWidth" v-model="snackbar" :timeout="timeout" top>
       {{ snackbarMessage }}
       <v-btn color="primary" flat @click="snackbar = false">Close</v-btn>
     </v-snackbar>

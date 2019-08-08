@@ -113,13 +113,14 @@
                 color="red white--text"
                 class="mb-3"
                 round
+                :disabled="testAccountLock"
                 @click="deleteAccount"
               >Delete Account</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
-
+  <v-card-text class="pl-2" v-if="testAccountLock">* This is a test account and cannot be deleted</v-card-text>
             <v-divider></v-divider>
-
+            
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="primary" flat @click="dialog = false">Close</v-btn>
@@ -170,7 +171,9 @@ export default {
       }
     });
   },
-  mounted() {},
+  mounted() {
+   
+  },
   data() {
     return {
       pages: [
@@ -188,7 +191,8 @@ export default {
       totalPasswords: "",
       totalNotes: "",
       id: "",
-      avatar: "https://api.adorable.io/avatars/167/"
+      avatar: "https://api.adorable.io/avatars/167/",
+      testAccount: '08dUCWSZ2aX809dc3yB91vwXTDh1'
     };
   },
   methods: {
@@ -210,7 +214,9 @@ export default {
         .signOut()
         .then(() => {
           this.$router.push("/");
+           window.location.reload(true)
         });
+        
     },
     deleteAccount() {
       if (confirm("Are You Sure?")) {
@@ -225,6 +231,7 @@ export default {
             console.log(error);
           });
         this.dialog = false;
+       
       }
     }
   },
@@ -237,6 +244,13 @@ export default {
     },
     navColor() {
       return window.innerWidth > 800 ? "black--text" : "white--text";
+    },
+    testAccountLock() {
+      if(firebase.auth().currentUser.uid == this.testAccount) {
+        return true;
+      }else{
+        return false;
+      }
     }
   }
 };
