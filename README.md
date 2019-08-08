@@ -25,10 +25,10 @@ i learnt a lot making this project and was very fun to make, i feel i have i nic
  
  ## known bugs
  
- - delete account not working
- - button on the snackbar not working
+ - ~~delete account not working~~ (fixed)
+ - ~~button on the snackbar not working~~ (fixed)
  - can still delete password after being updated
- - fixes and responsiveness coming soon
+ - ~~responsiveness~~ (fixed)
  
  
  
