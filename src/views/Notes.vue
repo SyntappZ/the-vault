@@ -327,8 +327,7 @@ export default {
 </script>
 
 <style scoped>
-.notes {
-}
+
 .wrap {
   width: 100%;
   height: 100vh;

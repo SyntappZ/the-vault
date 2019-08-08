@@ -133,7 +133,9 @@ html {
   }
 }
 
-@media screen and (max-height: 800px) {
-
+@media (max-height: 1024px) {
+  html {
+  overflow-y: auto;
+}
 }
 </style>

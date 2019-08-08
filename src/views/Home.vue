@@ -9,88 +9,58 @@
       v-on:closeSignUpDialog="closeSignUpDialog()"
       :signUpDialog="signUpDialog"
     />
-    <v-container class="homeContainer" >
-      <v-layout align-center justify-space-around row fill-height>
-        <v-flex lg5>
-          <div class="box sign-in" v-if="!userSignedIn">
-            <v-icon color="secondary" class="lock">lock</v-icon>
-
-            <v-container>
-              <v-layout >
-                <v-flex >
-                  <form>
-                    <v-text-field
-                      v-model="email"
-                      :error-messages="emailErrors"
-                      label="E-mail"
-                      required
-                    ></v-text-field>
-                    <v-text-field
-                      v-model="password"
-                      :error-messages="passwordErrors"
-                      label="Password"
-                      required
-                      :type="show ? 'text' : 'password'"
-                      @click:append="show = !show"
-                      :append-icon="show ? 'visibility' : 'visibility_off'"
-                    ></v-text-field>
-                  </form>
-                  <v-btn @click="signIn" flat round class="my-3 secondary" large>Login</v-btn>
-                  <h3>
-                    Don't have an account?
-                    <span @click="openSignUp" class="sign-up">sign up</span>
-                  </h3>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </div>
-
-          <div class="box sign-in" v-else>
-            <v-avatar class="avatar-wrap" size="150">
-              <img class="avatar" src="/default.png">
-            </v-avatar>
-
-            <v-container>
-              <v-layout align-center>
-                <v-flex>
-                  <h1 class="my-4">Welcome Back {{ userName }}</h1>
-                  <v-btn @click="signOut" flat round class="my-3 secondary" large>Sign Out</v-btn>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </div>
+    <v-container class="homeContainer">
+      <v-layout wrap>
+        <v-flex class="sign-in-wrap" xs12 sm12 md6 lg6 v-if="!userSignedIn">
+          <v-icon color="secondary" class="lock">lock</v-icon>
+          <form>
+            <v-text-field v-model="email" :error-messages="emailErrors" label="E-mail" required></v-text-field>
+            <v-text-field
+              v-model="password"
+              :error-messages="passwordErrors"
+              label="Password"
+              required
+              :type="show ? 'text' : 'password'"
+              @click:append="show = !show"
+              :append-icon="show ? 'visibility' : 'visibility_off'"
+            ></v-text-field>
+          </form>
+          <v-btn @click="signIn" flat round class="my-3 secondary" large>Login</v-btn>
+          <h3>
+            Don't have an account?
+            <span @click="openSignUp" class="sign-up">sign up</span>
+          </h3>
         </v-flex>
 
-        <v-flex lg5 >
-          <div class="box welcome">
-            <v-responsive>
-              <v-container fill-height>
-                <v-layout align-center>
-                  <v-flex>
-                    <h3 class="mb-3 display-3 white--text">Welcome To The Vault</h3>
+        <v-flex v-else class="box sign-in" xs12 sm12 md6 lg6>
+          <v-avatar class="avatar-wrap" size="150">
+            <img class="avatar" src="/default.png" />
+          </v-avatar>
 
-                    <span class="subheading font-weight-thin font-italic white--text">
-                      Create and store strong passwords and never have to worry about
-                      forgetting them, you will get a strength check on your password or you can use the password generator and automatically get a strong password.
-                    </span>
+          <h1 class="my-4">Welcome Back {{ userName }}</h1>
+          <v-btn @click="signOut" flat round class="my-3 secondary" large>Sign Out</v-btn>
+        </v-flex>
 
-                    <v-divider style="width:500px; margin:auto" class="my-5"></v-divider>
+        <v-flex xs12 sm12 md6 lg6>
+          <h3 class="mb-3 display-3 white--text">Welcome To The Vault</h3>
 
-                    <div class="white--text title mb-3">Create password now!</div>
+          <span class="subheading font-weight-thin font-italic white--text">
+            Create and store strong passwords and never have to worry about
+            forgetting them, you will get a strength check on your password or you can use the password generator and automatically get a strong password.
+          </span>
 
-                    <v-btn
-                      :disabled="!userSignedIn"
-                      @click="createPassword"
-                      flat
-                      round
-                      class="my-3 primary"
-                      large
-                    >create</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-container>
-            </v-responsive>
-          </div>
+          <v-divider style="width:500px; margin:auto" class="my-5"></v-divider>
+
+          <div class="white--text title mb-3">Create password now!</div>
+
+          <v-btn
+            :disabled="!userSignedIn"
+            @click="createPassword"
+            flat
+            round
+            class="my-3 primary"
+            large
+          >create</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
@@ -137,7 +107,7 @@ export default {
       id: "",
       snackbar: false,
       snackbarMessage: "",
-       timeout: 5000
+      timeout: 5000
     };
   },
 
@@ -196,26 +166,32 @@ export default {
 
 <style scoped>
 .homeContainer {
-  height:90vh;
+  min-height: 90vh;
+  display:flex;
+  align-items: center;
 }
 .sign-up {
   cursor: pointer;
   font-weight: 300;
   margin-left: 10px;
 }
-
+.sign-in-wrap{
+ 
+  
+}
 .lock {
   font-size: 80px;
   width: 120px;
   height: 120px;
   border: solid 3px;
   border-radius: 50%;
- 
+
 }
 .avatar {
   border: black 1px solid;
 }
-@media screen and (min-height: 800px) {
+@media (min-height: 1024px) {
+ 
 }
 </style>
 
