@@ -196,7 +196,7 @@ export default {
 .avatar {
   border: black 1px solid;
 }
-@media (max-height: 1024px) {
+@media (max-height: 800px) {
   .sign-in-wrap,
   .signed-in-wrap,
   .welcome-wrap {

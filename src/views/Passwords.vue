@@ -348,8 +348,8 @@ export default {
         .length;
     },
     pageWidth() {
-      return window.innerWidth > 1024 ? true : false;
-    }
+      return window.innerWidth > 800 ? true : false;
+    },
   }
 };
 </script>
@@ -391,7 +391,7 @@ export default {
   margin-top: 50px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 800px) {
   .add-password {
     margin: 30px 0;
   }

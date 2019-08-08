@@ -355,7 +355,7 @@ export default {
   },
   computed: {
     pageWidth() {
-      return window.innerWidth > 1024 ? true : false;
+      return window.innerWidth > 800 ? true : false;
     },
     date() {
       let today = new Date();
@@ -423,7 +423,7 @@ export default {
 .note-tool {
   border-radius: 10px;
 }
-@media (max-width: 1024px) {
+@media (max-width: 800px) {
   .notes-area {
     width: 100%;
   }

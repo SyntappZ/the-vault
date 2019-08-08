@@ -199,7 +199,7 @@ export default {
 
   computed: {
     pageWidth() {
-      return window.innerWidth > 1024 ? true : false;
+      return window.innerWidth > 800 ? true : false;
     },
     scorePassword() {
       let score = 0;

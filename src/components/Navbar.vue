@@ -233,10 +233,10 @@ export default {
       return this.nav ? "#fff" : "#000";
     },
     pageWidth() {
-      return window.innerWidth > 1024 ? true : false;
+      return window.innerWidth > 800 ? true : false;
     },
     navColor() {
-      return window.innerWidth > 1024 ? "black--text" : "white--text";
+      return window.innerWidth > 800 ? "black--text" : "white--text";
     }
   }
 };
@@ -259,7 +259,7 @@ export default {
   background-color: transparent;
 }
 
-@media (max-width: 1024px) {
+@media (max-width:  800px) {
   #nav {
     background-color: #627e8f;
     color: white;

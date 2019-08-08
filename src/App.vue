@@ -43,7 +43,7 @@ export default {
 
   methods: {
     updatePage(page) {
-      if (window.innerWidth < 1024) {
+      if (window.innerWidth <= 1024) {
         if (page === 1) {
           this.color = "rgba(255, 255, 255, 0.725)";
           this.skew = "skewX(30deg)";
@@ -135,7 +135,7 @@ html {
   }
 }
 
-@media (max-height: 1024px) {
+@media (max-height:  800px) {
   html {
     overflow-y: auto;
   }
